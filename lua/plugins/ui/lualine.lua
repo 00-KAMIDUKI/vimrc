@@ -1,12 +1,12 @@
----@param flag boolean
----@param a string
----@param b string
-local function get_flip(flag, a, b)
-  return function()
-    flag = not flag
-    return flag and a or b
-  end
-end
+-- ---@param flag boolean
+-- ---@param a string
+-- ---@param b string
+-- local function get_flip(flag, a, b)
+--   return function()
+--     flag = not flag
+--     return flag and a or b
+--   end
+-- end
 
 local function get_spinner(idx)
   local spinner_icons = {
@@ -21,7 +21,7 @@ end
 local copilot_state = require('utils.copilot_state')
 local function copilot()
   local spinner = get_spinner(0)
-  local flip = get_flip(true, "", "●")
+  -- local flip = get_flip(true, "", "●")
   return function()
     local state = copilot_state()
     if state == "Normal" then

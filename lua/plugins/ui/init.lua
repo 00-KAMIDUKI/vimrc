@@ -1,9 +1,10 @@
 return {
-  require 'plugins.ui.lualine',
+  -- require 'plugins.ui.lualine',
   require 'plugins.ui.cokeline',
   require 'plugins.ui.statuscol',
   {
     'kyazdani42/nvim-web-devicons',
+    lazy = true,
     opts = {
       override = {
         yuck = {
@@ -74,9 +75,14 @@ return {
     },
   },
   {
+    'lewis6991/gitsigns.nvim',
+    lazy = true,
+    config = true,
+  },
+  {
     'folke/which-key.nvim',
     event = "VeryLazy",
-    init = function()
+    config = function()
       vim.o.timeout = true
       vim.o.timeoutlen = 300
       local which_key = require 'which-key'
@@ -86,11 +92,9 @@ return {
         },
       }, { mode = 'n' })
     end,
-    config = true,
   },
   {
     'Bekaboo/dropbar.nvim',
-    cond = vim.fn.has('nvim-0.10') == 1,
     config = true,
   },
   {
@@ -179,6 +183,7 @@ return {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
     },
+    event = "VeryLazy",
     init = function()
       vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle<CR>', { desc = 'Toggle File Tree' })
       vim.api.nvim_create_autocmd('BufEnter', {
@@ -215,12 +220,7 @@ return {
     },
   },
   {
-    'lewis6991/gitsigns.nvim',
-    config = true,
-  },
-  {
     "folke/noice.nvim",
-    event = "VeryLazy",
     opts = {
       presets = {
         inc_rename = true,
@@ -290,11 +290,10 @@ return {
     config = true,
   },
   {
-    "folke/twilight.nvim",
-    opts = {},
-  },
-  {
     "folke/zen-mode.nvim",
+    dependencies = {
+      "folke/twilight.nvim",
+    },
     opts = {
       window = {
         options = {

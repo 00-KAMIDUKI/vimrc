@@ -56,6 +56,7 @@ local duplicates = {
 return {
   {
     'neovim/nvim-lspconfig',
+    event = 'VeryLazy',
     dependencies = {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig',
@@ -234,6 +235,7 @@ return {
   },
   {
     'hrsh7th/nvim-cmp',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     dependencies = {
       'hrsh7th/nvim-cmp',
       'hrsh7th/cmp-nvim-lsp',
@@ -365,6 +367,7 @@ return {
   },
   {
     'zbirenbaum/copilot.lua',
+    event = 'VeryLazy',
     opts = {
       suggestion = {
         enabled = true,

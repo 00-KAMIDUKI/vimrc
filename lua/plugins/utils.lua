@@ -1,11 +1,16 @@
 return {
   {
     'windwp/nvim-autopairs',
+    event = 'InsertEnter',
     config = true,
   },
   {
     'numToStr/Comment.nvim',
-    init = function()
+    keys = {
+      { "<leader>/", "<cmd>CommentToggle<cr>", desc = "Comment Current Line" },
+      { "/", "<cmd>CommentToggle<cr>", desc = "Comment Toggle", mode = "v" },
+    },
+    config = function()
       local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
       local api = require('Comment.api')
 
@@ -61,6 +66,9 @@ return {
   },
   {
     'akinsho/toggleterm.nvim',
+    keys = {
+      { "<leader>\\", "<cmd>ToggleTerm<cr>", desc = "Toggle Terminal" },
+    },
     opts = {
       open_mapping = '<leader>\\',
       insert_mappings = false,
@@ -81,6 +89,7 @@ return {
   },
   {
     'famiu/bufdelete.nvim',
+    lazy = true,
   },
   {
     "soulis-1256/eagle.nvim",
@@ -122,8 +131,7 @@ return {
   },
   {
     "ThePrimeagen/refactoring.nvim",
-    opts = {},
-    init = function() require('telescope').load_extension('refactoring') end,
+    config = function() require('telescope').load_extension('refactoring') end,
     keys = {
       {
         '<space>rr',
