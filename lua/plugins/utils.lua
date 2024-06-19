@@ -8,9 +8,9 @@ return {
     'numToStr/Comment.nvim',
     keys = {
       { "<leader>/", "<cmd>CommentToggle<cr>", desc = "Comment Current Line" },
-      { "/", "<cmd>CommentToggle<cr>", desc = "Comment Toggle", mode = "v" },
+      { "/", "<cmd>CommentToggle<cr>", desc = "Comment Toggle", mode = 'v' },
     },
-    config = function()
+    config = function(_, opts)
       local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
       local api = require('Comment.api')
 
@@ -18,6 +18,7 @@ return {
         vim.api.nvim_feedkeys(esc, 'nx', false)
         api.toggle.linewise(vim.fn.visualmode())
       end, { desc = 'Comment' })
+      require('Comment').setup(opts)
     end,
     opts = {
       toggler = {
