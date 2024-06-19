@@ -26,16 +26,16 @@ vim.api.nvim_create_autocmd({
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'toggleterm',
+  pattern = { 'toggleterm', 'man' },
   callback = function()
     vim.opt_local.spell = false
   end,
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'hyprlang',
+  pattern = 'wgsl',
   callback = function()
-    vim.opt.commentstring = '# %s'
+    vim.opt.commentstring = '// %s'
   end,
 })
 

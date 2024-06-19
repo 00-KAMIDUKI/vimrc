@@ -82,8 +82,11 @@ return {
 
       local lspconfig = require 'lspconfig'
 
+      ---@param server_name string
+      ---@param opts table
+      ---@param update_capability function | nil
       local function setup_server(server_name, opts, update_capability)
-        opts.capabilities = require('cmp_nvim_lsp').default_capabilities(opts.capabilities)
+        opts.capabilities = require 'cmp_nvim_lsp'.default_capabilities(opts.capabilities)
         if update_capability ~= nil then
           update_capability(opts.capabilities)
         end
@@ -95,39 +98,39 @@ return {
           setup_server(server_name, {})
         end,
       }
-      local function mason_handlers_add(server_name, ...)
-        local args = { ... }
-        mason_handlers[server_name] = function()
-          setup_server(server_name, args[1], args[2])
-        end
-      end
 
-      mason_handlers_add('mesonlsp', {
-        root_dir = require('lspconfig.util').root_pattern('meson_options.txt', 'meson.options', '.git'),
-      })
-
-      mason_handlers_add('jsonls', {
-        filetypes = { "json", "jsonc" },
-        settings = {
-          json = {
-            schemas = {
-              {
-                fileMatch = { "package.json" },
-                url = "https://json.schemastore.org/package.json",
+      local mason_handlers_additional = {
+        mesonlsp = {
+          root_dir = require('lspconfig.util').root_pattern('meson_options.txt', 'meson.options', '.git'),
+        },
+        jsonls = {
+          filetypes = { "json", "jsonc" },
+          settings = {
+            json = {
+              schemas = {
+                {
+                  fileMatch = { "package.json" },
+                  url = "https://json.schemastore.org/package.json",
+                },
+                {
+                  fileMatch = { "tsconfig*.json" },
+                  url = "https://json.schemastore.org/tsconfig.json",
+                },
               },
-              {
-                fileMatch = { "tsconfig*.json" },
-                url = "https://json.schemastore.org/tsconfig.json",
-              },
+              validate = { enable = true },
             },
-            validate = { enable = true },
           },
         },
-      })
+        volar = {
+          filetypes = { "vue", "typescript", "javascript" },
+        },
+      }
 
-      mason_handlers_add('volar', {
-        filetypes = { "vue", "typescript", "javascript" },
-      })
+      for server_name, opts, update_capability in pairs(mason_handlers_additional) do
+        mason_handlers[server_name] = function()
+          setup_server(server_name, opts, update_capability)
+        end
+      end
 
       require('mason-lspconfig').setup_handlers(mason_handlers)
 

@@ -330,20 +330,20 @@ return {
       { '<leader>z', function() require('zen-mode').toggle() end, desc = 'Zen Mode' },
     },
   },
-  {
-    "folke/edgy.nvim",
-    opts = {
-      left = {
-        'neo-tree'
-      },
-      bottom = {
-        'toggleterm'
-      },
-      animate = {
-        enable = false,
-      },
-    },
-  },
+  -- {
+  --   "folke/edgy.nvim",
+  --   opts = {
+  --     left = {
+  --       'neo-tree'
+  --     },
+  --     bottom = {
+  --       'toggleterm'
+  --     },
+  --     animate = {
+  --       enable = false,
+  --     },
+  --   },
+  -- },
   -- {
   --   'tamton-aquib/duck.nvim',
   --   config = true,

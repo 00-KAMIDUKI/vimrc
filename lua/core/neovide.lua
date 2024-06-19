@@ -26,7 +26,7 @@ set_font()
 vim.opt.winbl = 68
 
 vim.g.neovide_scale_factor = 1.00
-vim.g.neovide_transparency = 0.73
+vim.g.neovide_transparency = 0.78
 vim.g.neovide_scroll_animation_length = 0.14
 vim.g.neovide_cursor_vfx_mode = "railgun"
 vim.g.neovide_cursor_vfx_opacity = 220.0
