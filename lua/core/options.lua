@@ -17,7 +17,7 @@ vim.opt.termguicolors = true
 vim.opt.showmode = false
 vim.opt.title = true
 vim.opt.mousescroll = 'ver:3,hor:3'
-vim.opt.fillchars = [[foldopen:,foldsep: ,foldclose:]]
+vim.opt.fillchars = [[foldopen:,foldsep: ,foldclose:,vert: ]]
 vim.opt.laststatus = 3 -- always and only last window
 
 vim.opt.incsearch = true

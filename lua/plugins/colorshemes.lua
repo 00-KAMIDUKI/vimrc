@@ -34,7 +34,7 @@ local plugins = {
         },
         mason = true,
         which_key = true,
-        neotree = false,
+        -- neotree = false,
       }
     },
     -- init = function()
