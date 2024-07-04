@@ -96,8 +96,8 @@ return {
 
       dashboard.section.buttons.val = {
         dashboard.button('a', '   new file', '<cmd>bd<CR>'),
-        -- dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
-        -- dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
+        dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
+        dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
         dashboard.button('r', '   restore', require('utils.session').load_last_session),
         dashboard.button('s', '   sessions', require('utils.session').select_project),
         dashboard.button('c', '   configure', '<cmd>exe "edit " . stdpath("config")<CR>'),

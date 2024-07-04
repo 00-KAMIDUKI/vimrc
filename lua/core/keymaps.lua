@@ -35,7 +35,7 @@ vim.keymap.set('n', '<M-q>', require 'utils.buffer_delete', opts 'Buffer Delete'
 for _, key in ipairs { 'n', 'N', '*', '#' } do
   vim.keymap.set('n', key, function()
     vim.opt_local.hlsearch = true
-    vim.api.nvim_command('normal! ' .. key)
+    vim.api.nvim_command('silent! normal! ' .. key)
   end)
 end
 
@@ -62,4 +62,3 @@ vim.keymap.set('v', '<S-Up>', '<Up>', opts 'Up')
 vim.keymap.set('v', '<S-Down>', '<Down>', opts 'Down')
 
 vim.keymap.set('i', 'kk', '<Esc>', opts 'Exit Insert Mode')
-

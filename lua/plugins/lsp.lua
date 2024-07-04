@@ -56,7 +56,7 @@ local duplicates = {
 return {
   {
     'neovim/nvim-lspconfig',
-    event = 'VeryLazy',
+    -- event = 'VeryLazy',
     dependencies = {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig',
