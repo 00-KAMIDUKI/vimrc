@@ -64,7 +64,7 @@ return {
       'folke/neodev.nvim',
     },
     config = function()
-      vim.lsp.set_log_level 'OFF'
+      vim.lsp.set_log_level 'ERROR'
       require 'lspconfig.ui.windows'.default_options = {
         border = {
           { '┌', 'NormalFloat' },
@@ -127,6 +127,7 @@ return {
         },
       }
 
+      -- FIXME: update_capabilities won't work
       for server_name, opts, update_capability in pairs(mason_handlers_additional) do
         mason_handlers[server_name] = function()
           setup_server(server_name, opts, update_capability)
@@ -159,15 +160,6 @@ return {
             capabilities.offsetEncoding = "utf-8"
           end,
         },
-        -- glsl_ls = {
-        --   cmd = {
-        --     "glslls",
-        --     "--stdin",
-        --     "--target-env", "opengl",
-        --   },
-        --   filetype = { 'glsl' },
-        -- },
-        neocmake = {},
         pyright = {},
         tsserver = {
           init_options = {
@@ -190,6 +182,7 @@ return {
           },
         },
         zls = {},
+        hls = {},
       }
 
       for server_name, opts in pairs(servers) do
@@ -199,7 +192,8 @@ return {
       vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, { desc = "Lsp Diagnostic Float" })
       vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Lsp Next Diagnostic" })
       vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Lsp Previous Diagnostic" })
-      vim.keymap.set('n', '<space>q', function() require 'trouble'.toggle 'diagnostics' end, { desc = "Lsp Diagnostic List" })
+      vim.keymap.set('n', '<space>q', function() require 'trouble'.toggle 'diagnostics' end,
+        { desc = "Lsp Diagnostic List" })
 
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('UserLspConfig', {}),
@@ -245,7 +239,7 @@ return {
       'hrsh7th/cmp-calc',
       'hrsh7th/cmp-cmdline',
       'zbirenbaum/copilot-cmp',
-      { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp'},
+      { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp' },
       'rafamadriz/friendly-snippets',
     },
 
@@ -283,8 +277,8 @@ return {
               -- that way you will only jump inside the snippet region
             elseif luasnip.expand_or_jumpable() then
               luasnip.expand_or_jump()
-            -- elseif has_words_before() then
-            --   cmp.complete()
+              -- elseif has_words_before() then
+              --   cmp.complete()
             else
               fallback()
             end

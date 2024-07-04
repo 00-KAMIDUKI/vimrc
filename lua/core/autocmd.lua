@@ -46,7 +46,7 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
-local session = require('utils.session')
+local session = require 'utils.session'
 
 vim.api.nvim_create_autocmd('VimLeave', {
   callback = session.on_exit_vim,
@@ -75,9 +75,13 @@ vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   callback = require('utils.ime').enter_insert,
 })
 
+vim.api.nvim_create_autocmd({ "InsertEnter" }, {
+  callback = require 'utils.exit_hlsearch',
+})
+
 vim.api.nvim_create_user_command("MakeDirectory", function()
   ---@diagnostic disable-next-line: missing-parameter
-  local path = vim.fn.expand("%")
+  local path = vim.fn.expand "%"
   local dir = vim.fn.fnamemodify(path, ":p:h")
   if vim.fn.isdirectory(dir) == 0 then
     vim.fn.mkdir(dir, "p")
@@ -86,3 +90,13 @@ vim.api.nvim_create_user_command("MakeDirectory", function()
   end
 end, { desc = "Create directory if it doesn't exist" })
 
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
+  pattern = { "*.hl", "hypr*.conf" },
+  callback = function()
+    vim.lsp.start {
+      name = "hyprlang",
+      cmd = { vim.fn.stdpath "data" .. "/mason/bin/hyprls" },
+      root_dir = vim.fn.getcwd(),
+    }
+  end
+})

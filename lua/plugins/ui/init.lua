@@ -80,20 +80,6 @@ return {
     config = true,
   },
   {
-    'folke/which-key.nvim',
-    event = "VeryLazy",
-    config = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-      local which_key = require 'which-key'
-      which_key.register({
-        ['f'] = {
-          name = 'Find',
-        },
-      }, { mode = 'n' })
-    end,
-  },
-  {
     'Bekaboo/dropbar.nvim',
     config = true,
   },
@@ -110,8 +96,8 @@ return {
 
       dashboard.section.buttons.val = {
         dashboard.button('a', '   new file', '<cmd>bd<CR>'),
-        dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
-        dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
+        -- dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
+        -- dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
         dashboard.button('r', '   restore', require('utils.session').load_last_session),
         dashboard.button('s', '   sessions', require('utils.session').select_project),
         dashboard.button('c', '   configure', '<cmd>exe "edit " . stdpath("config")<CR>'),
@@ -217,9 +203,6 @@ return {
       cmdline = {
         view = 'cmdline_popup',
       },
-      messages = {
-        view_search = false,
-      },
       routes = {
         {
           filter = {
@@ -301,16 +284,12 @@ return {
           vim.g.neovide_transparency = 100
         end
         vim.cmd 'ScrollbarToggle'
-        -- vim.cmd 'Noice disable'
-        vim.cmd 'ColorizerToggle'
       end,
       on_close = function()
         if vim.g.neovide then
           vim.g.neovide_transparency = vim.g.old_transparency
         end
         vim.cmd 'ScrollbarToggle'
-        -- vim.cmd 'Noice enable'
-        vim.cmd 'ColorizerToggle'
       end,
     },
     keys = {

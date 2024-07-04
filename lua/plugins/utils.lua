@@ -92,13 +92,42 @@ return {
     'famiu/bufdelete.nvim',
     lazy = true,
   },
+  -- {
+  --   "soulis-1256/eagle.nvim",
+  --   config = function()
+  --     require('utils.defer').add(function()
+  --       require('eagle').setup()
+  --     end)
+  --   end
+  -- },
   {
-    "soulis-1256/eagle.nvim",
+    'folke/which-key.nvim',
+    event = "VeryLazy",
     config = function()
-      require('utils.defer').add(function()
-        require('eagle').setup()
-      end)
-    end
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      local which_key = require 'which-key'
+      which_key.register({
+        ['<leader>f'] = {
+          name = 'Find',
+        },
+        ['<leader>d'] = {
+          name = 'Debug',
+        },
+        ['<leader>c'] = {
+          name = 'Color Picker',
+        },
+        ['<space>ca'] = {
+          name = 'Code Action',
+        },
+        ['<space>w'] = {
+          name = 'Workspace',
+        },
+        ['<space>r'] = {
+          name = 'Refactor',
+        },
+      }, { mode = 'n' })
+    end,
   },
   {
     'brenoprata10/nvim-highlight-colors',
@@ -159,7 +188,7 @@ return {
   },
   {
     "ThePrimeagen/refactoring.nvim",
-    config = function() require('telescope').load_extension('refactoring') end,
+    config = function() require('telescope').load_extension 'refactoring' end,
     keys = {
       {
         '<space>rr',
@@ -185,6 +214,19 @@ return {
         mode = { 'n' },
         desc = "Cleanup",
       },
-    }
+    },
   },
+  {
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    opts = {},
+    -- stylua: ignore
+    keys = {
+      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+      { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+      { "r",     mode = { "o" },           function() require("flash").remote() end,            desc = "Remote Flash" },
+      { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+    },
+  }
 }
