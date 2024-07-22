@@ -256,10 +256,10 @@ return {
       background_colour = "#000000",
     },
   },
-  {
-    'dgagn/diagflow.nvim',
-    config = true,
-  },
+  -- {
+  --   'dgagn/diagflow.nvim',
+  --   config = true,
+  -- },
   {
     "folke/zen-mode.nvim",
     dependencies = {

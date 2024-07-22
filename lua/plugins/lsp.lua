@@ -364,7 +364,7 @@ return {
     event = 'VeryLazy',
     opts = {
       suggestion = {
-        enabled = true,
+        enabled = false,
         auto_trigger = true,
         keymap = {
           accept = "<C-S-l>",

@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd({
   'BufNewFile',
 }, {
   desc = 'Set filetype to hyprlang',
-  pattern = 'hypr*.conf',
+  pattern = { 'hypr*.conf', '*.hl' },
   command = 'setlocal filetype=hyprlang',
 })
 
