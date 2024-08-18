@@ -106,25 +106,46 @@ return {
     local align = { provider = "%=" }
     local truncate = { provider = "%<" }
 
+    ---@param x number
+    ---@return boolean
+    local not_nil_and_gt_0 = function(x)
+      return x and x > 0
+    end
+
+    local send_event = function()
+      vim.api.nvim_exec_autocmds('User', {
+        pattern = 'PaperLineUpdateDiff',
+      })
+    end
+
+    vim.api.nvim_create_autocmd('User', {
+      pattern = 'GitSignsUpdate',
+      callback = send_event,
+    })
+
+    vim.api.nvim_create_autocmd('BufEnter', {
+      callback = send_event,
+    })
+
     local diff = {
       condition = function() return vim.b.gitsigns_status_dict end,
       update = {
         "User",
-        pattern = 'GitSignsUpdate',
+        pattern = 'PaperLineUpdateDiff',
       },
       {
         provider = function() return ' ' .. vim.b.gitsigns_status_dict.added .. ' ' end,
-        condition = function() return vim.b.gitsigns_status_dict.added end,
+        condition = function() return not_nil_and_gt_0(vim.b.gitsigns_status_dict.added) end,
         hl = 'DiagnosticSignOk'
       },
       {
         provider = function() return ' ' .. vim.b.gitsigns_status_dict.changed .. ' ' end,
-        condition = function() return vim.b.gitsigns_status_dict.changed end,
+        condition = function() return not_nil_and_gt_0(vim.b.gitsigns_status_dict.changed) end,
         hl = 'DiagnosticSignWarn'
       },
       {
         provider = function() return ' ' .. vim.b.gitsigns_status_dict.removed .. ' ' end,
-        condition = function() return vim.b.gitsigns_status_dict.removed end,
+        condition = function() return not_nil_and_gt_0(vim.b.gitsigns_status_dict.removed) end,
         hl = 'DiagnosticSignError'
       },
     }
