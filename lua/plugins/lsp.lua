@@ -253,10 +253,8 @@ return {
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
       'hrsh7th/cmp-path',
-      'f3fora/cmp-spell',
       'hrsh7th/cmp-calc',
       'hrsh7th/cmp-cmdline',
-      'zbirenbaum/copilot-cmp',
       { 'L3MON4D3/LuaSnip', build = 'make install_jsregexp' },
       'rafamadriz/friendly-snippets',
     },
@@ -317,15 +315,6 @@ return {
           { name = 'buffer' },
           { name = 'path' },
           { name = 'calc' },
-          {
-            name = 'spell',
-            option = {
-              keep_all_entries = false,
-              enable_in_context = function()
-                return true
-              end,
-            },
-          },
         },
 
         formatting = {
