@@ -3,14 +3,13 @@ if not vim.g.neovide then
 end
 
 local candidate_fonts = {
-  os.getenv 'XDG_BACKEND' == 'wayland' and {
-    face = 'JetBrainsMono Nerd Font Propo,LXGW WenKai Mono:h12.5'
-  } or {
-    face = 'Firacode Nerd Font:h9'
-  },
+  os.getenv 'XDG_BACKEND' == 'wayland'
+    and { face = 'JetBrainsMono Nerd Font Propo,LXGW WenKai Mono:h15', linespace = -1 }
+    or { face = 'Firacode Nerd Font:h9' },
+  { face = 'JetBrainsMono Nerd Font Propo,LXGW WenKai Mono:h12.5' },
   { face = 'Maple Mono,JetBrainsMono Nerd Font Propo,LXGW WenKai Mono:h12.5', linespace = -1 },
   { face = 'FantasqueSansM Nerd Font Propo,LXGW WenKai Mono:h15.4', linespace = -1 },
-  { face = 'CodeNewRoman Nerd Font:h14.71',  },
+  { face = 'CodeNewRoman Nerd Font:h14.71' },
   { face = '' },
 }
 
@@ -26,7 +25,7 @@ set_font()
 vim.opt.winbl = 68
 
 vim.g.neovide_scale_factor = 1.00
-vim.g.neovide_transparency = 0.78
+vim.g.neovide_transparency = 0.93
 vim.g.neovide_scroll_animation_length = 0.14
 vim.g.neovide_cursor_vfx_mode = "railgun"
 vim.g.neovide_cursor_vfx_opacity = 220.0

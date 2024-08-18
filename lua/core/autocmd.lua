@@ -90,13 +90,3 @@ vim.api.nvim_create_user_command("MakeDirectory", function()
   end
 end, { desc = "Create directory if it doesn't exist" })
 
-vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWinEnter' }, {
-  pattern = { "*.hl", "hypr*.conf" },
-  callback = function()
-    vim.lsp.start {
-      name = "hyprlang",
-      cmd = { vim.fn.stdpath "data" .. "/mason/bin/hyprls" },
-      root_dir = vim.fn.getcwd(),
-    }
-  end
-})

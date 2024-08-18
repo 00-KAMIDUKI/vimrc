@@ -56,7 +56,6 @@ local duplicates = {
 return {
   {
     'neovim/nvim-lspconfig',
-    -- event = 'VeryLazy',
     dependencies = {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig',
@@ -87,8 +86,9 @@ return {
       ---@param opts table
       ---@param update_capability function | nil
       local function setup_server(server_name, opts, update_capability)
+        -- opts = require 'coq'.lsp_ensure_capabilities(opts)
         opts.capabilities = require 'cmp_nvim_lsp'.default_capabilities(opts.capabilities)
-        if update_capability ~= nil then
+        if update_capability and opts.capabilities then
           update_capability(opts.capabilities)
         end
         lspconfig[server_name].setup(opts)
@@ -118,7 +118,6 @@ return {
                   url = "https://json.schemastore.org/tsconfig.json",
                 },
               },
-              validate = { enable = true },
             },
           },
         },
@@ -127,10 +126,9 @@ return {
         },
       }
 
-      -- FIXME: update_capabilities won't work
-      for server_name, opts, update_capability in pairs(mason_handlers_additional) do
+      for server_name, opts in pairs(mason_handlers_additional) do
         mason_handlers[server_name] = function()
-          setup_server(server_name, opts, update_capability)
+          setup_server(server_name, opts, opts.update_capability)
         end
       end
 
@@ -160,7 +158,7 @@ return {
             capabilities.offsetEncoding = "utf-8"
           end,
         },
-        pyright = {},
+        -- pyright = {},
         tsserver = {
           init_options = {
             plugins = {
@@ -227,6 +225,26 @@ return {
       })
     end,
   },
+  -- {
+  --   "neovim/nvim-lspconfig",
+  --   dependencies = {
+  --     { "ms-jpq/coq_nvim",       branch = "coq" },       -- main one
+  --     { "ms-jpq/coq.artifacts",  branch = "artifacts" }, -- 9000+ Snippets
+  --     -- lua & third party sources
+  --     -- See https://github.com/ms-jpq/coq.thirdparty
+  --     { 'ms-jpq/coq.thirdparty', branch = "3p" }
+  --     -- Need to **configure separately**
+  --     -- - shell repl
+  --     -- - nvim lua api
+  --     -- - scientific calculator
+  --     -- - comment bannerdependencies = {
+  --   },
+  --   init = function()
+  --     vim.g.coq_settings = {
+  --       auto_start = true,
+  --     }
+  --   end,
+  -- },
   {
     'hrsh7th/nvim-cmp',
     event = { 'InsertEnter', 'CmdlineEnter' },
@@ -275,7 +293,7 @@ return {
               cmp.select_next_item()
               -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
               -- that way you will only jump inside the snippet region
-            elseif luasnip.expand_or_jumpable() then
+            elseif luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
               -- elseif has_words_before() then
               --   cmp.complete()
@@ -364,7 +382,7 @@ return {
     event = 'VeryLazy',
     opts = {
       suggestion = {
-        enabled = false,
+        enabled = true,
         auto_trigger = true,
         keymap = {
           accept = "<C-S-l>",

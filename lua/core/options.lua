@@ -1,40 +1,44 @@
-vim.opt.clipboard = "unnamedplus"
-vim.opt.completeopt = "menuone,noselect"
-vim.opt.mouse = "a"
-vim.opt.mousemoveevent = true
+vim.o.clipboard = "unnamedplus"
+vim.o.completeopt = "menuone,noselect"
+vim.o.mouse = "a"
+vim.o.mousemoveevent = true
 
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 2
-vim.opt.softtabstop = 2
+vim.o.expandtab = true
+vim.o.shiftwidth = 2
+vim.o.softtabstop = 2
 
-vim.opt.number = true
-vim.opt.relativenumber = true
-vim.opt.numberwidth = 1
-vim.opt.signcolumn = "auto:1"
-vim.opt.wrap = false
-vim.opt.cursorline = true
-vim.opt.termguicolors = true
-vim.opt.showmode = false
-vim.opt.title = true
-vim.opt.mousescroll = 'ver:3,hor:3'
-vim.opt.fillchars = [[foldopen:,foldsep: ,foldclose:,vert: ]]
-vim.opt.laststatus = 3 -- always and only last window
+if vim.fn.argc() > 0 then
+  vim.o.autochdir = true
+end
 
-vim.opt.incsearch = true
-vim.opt.hlsearch = false
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.o.number = true
+vim.o.relativenumber = true
+vim.o.numberwidth = 1
+vim.o.signcolumn = "auto:1"
+vim.o.wrap = false
+vim.o.cursorline = true
+vim.o.termguicolors = true
+vim.o.showmode = false
+vim.o.title = true
+vim.o.mousescroll = 'ver:3,hor:3'
+vim.o.fillchars = [[foldopen:,foldsep: ,foldclose:,vert: ]]
+vim.o.laststatus = 3 -- always and only last window
 
-vim.opt.splitright = true
-vim.opt.splitkeep = 'screen'
+vim.o.incsearch = true
+vim.o.hlsearch = false
+vim.o.ignorecase = true
+vim.o.smartcase = true
+
+vim.o.splitright = true
+vim.o.splitkeep = 'screen'
 
 vim.opt.whichwrap:append "<,>,[,],h,l"
 
-vim.opt.spell = true
+vim.o.spell = true
 vim.opt.spelloptions:append "camel"
 
-vim.opt.undofile = true
-vim.opt.swapfile = false
+vim.o.undofile = true
+vim.o.swapfile = false
 
 vim.opt.sessionoptions = {
   'buffers',
@@ -43,14 +47,13 @@ vim.opt.sessionoptions = {
   'help',
   'tabpages',
   'winsize',
-  -- 'options',
   'globals',
 }
 
-vim.opt.foldnestmax = 1
-vim.opt.foldcolumn = 'auto' -- '0' is not bad
-vim.opt.foldlevel = 99      -- Using ufo provider need a large value, feel free to decrease the value
-vim.opt.foldlevelstart = 99
-vim.opt.foldenable = true
+vim.o.foldnestmax = 1
+vim.o.foldcolumn = 'auto' -- '0' is not bad
+vim.o.foldlevel = 99      -- Using ufo provider need a large value, feel free to decrease the value
+vim.o.foldlevelstart = 99
+vim.o.foldenable = true
 
 require('utils.set_diag_signs')()

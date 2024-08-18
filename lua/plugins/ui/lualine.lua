@@ -70,14 +70,14 @@ return {
           function() return ' ' .. (vim.diagnostic.count(0)[1] or 0) end,
           padding = { left = 1, right = 0 },
           cond = function() return vim.bo.filetype == 'Trouble' or #vim.lsp.get_clients { bufnr = 0 } > 0 end,
-          color = function() return vim.diagnostic.count(0)[1] and 'LspDiagnosticsError' or nil end,
-          on_click = function() require('trouble').toggle() end,
+          color = function() return vim.diagnostic.count(0)[1] and 'DiagnosticError' or nil end,
+          on_click = function() require 'trouble'.toggle 'diagnostics' end,
         },
         {
           function() return ' ' .. (vim.diagnostic.count(0)[2] or 0) end,
           cond = function() return vim.bo.filetype == 'Trouble' or #vim.lsp.get_clients { bufnr = 0 } > 0 end,
-          color = function() return vim.diagnostic.count(0)[2] and 'LspDiagnosticsWarning' or nil end,
-          on_click = function() require('trouble').toggle() end,
+          color = function() return vim.diagnostic.count(0)[2] and 'DiagnosticWarn' or nil end,
+          on_click = function() require 'trouble'.toggle 'diagnostics' end,
         },
       },
       lualine_x = {

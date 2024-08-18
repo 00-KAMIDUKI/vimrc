@@ -1,21 +1,25 @@
 local texts = {
-" ",
-"                                                                    ",
-"      ███████████           █████      ██                    ",
-"     ███████████             █████                            ",
-"     ████████████████ ███████████ ███   ███████    ",
-"    ████████████████ ████████████ █████ ██████████████  ",
-"   █████████████████████████████ █████ █████ ████ █████  ",
-" ██████████████████████████████████ █████ █████ ████ █████ ",
-"██████  ███ █████████████████ ████ █████ █████ ████ ██████",
-"██████   ██  ███████████████   ██ █████████████████",
-" ",
+  " ",
+  "                                                                    ",
+  "      ███████████           █████      ██                    ",
+  "     ███████████             █████                            ",
+  "     ████████████████ ███████████ ███   ███████    ",
+  "    ████████████████ ████████████ █████ ██████████████  ",
+  "   █████████████████████████████ █████ █████ ████ █████  ",
+  " ██████████████████████████████████ █████ █████ ████ █████ ",
+  "██████  ███ █████████████████ ████ █████ █████ ████ ██████",
+  "██████   ██  ███████████████   ██ █████████████████",
+  " ",
 }
 
+---@param a string | number
+---@param b string | number
+---@param ratio number
+---@return string
 local function hex_interpolation(a, b, ratio)
   a = tonumber(a, 16)
   b = tonumber(b, 16)
-  return string.format('%x', math.floor((b - a) * ratio + a + 0.5))
+  return string.format('%02x', math.floor((b - a) * ratio + a + 0.5))
 end
 
 local palette = {
@@ -51,52 +55,67 @@ for idx, color in ipairs(palette) do
   vim.api.nvim_set_hl(0, "Header" .. idx, { fg = '#' .. color[1] .. color[2] .. color[3] })
 end
 
-local background = { 'ff', 'ff', 'ff' }
-local bg = vim.api.nvim_get_hl(0, { name = 'Normal' }).bg
-if bg ~= nil then
-  bg = string.format('%x', bg)
-  background[1] = string.sub(bg, 1, 2)
-  background[2] = string.sub(bg, 3, 4)
-  background[3] = string.sub(bg, 5, 6)
+local background = {}
+
+local function set_background_color()
+  background = { 'ff', 'ff', 'ff' }
+  ---@type string | integer
+  local bg = vim.api.nvim_get_hl(0, { name = 'Normal' }).bg
+  if bg ~= nil then
+    bg = string.format('%06x', bg)
+    background[1] = string.sub(bg, 1, 2)
+    background[2] = string.sub(bg, 3, 4)
+    background[3] = string.sub(bg, 5, 6)
+  end
 end
 
+set_background_color()
+vim.api.nvim_create_autocmd('ColorScheme', { callback = set_background_color })
+
+--- PERF: stop setting hl when Alpha is now shown
 local counter = 0
-local timer = vim.loop.new_timer()
-timer:start(50, 50, vim.schedule_wrap(function()
-  local ratio = math.abs(counter - 36) / 36
+local timeout = function()
+  local a = 36
+  local ratio = math.abs(counter - a) / a
   for idx, color in ipairs(palette) do
+    local function help(x) return hex_interpolation(color[x], background[x], ratio) end
     vim.api.nvim_set_hl(0, "Header" .. idx, {
-      fg = '#' .. hex_interpolation(color[1], background[1], ratio) .. hex_interpolation(color[2], background[2], ratio) .. hex_interpolation(color[3], background[3], ratio)
+      fg = ('#%s%s%s'):format(help(1), help(2), help(3)),
     })
   end
-  counter = (counter + 1) % 72
-end))
+  counter = (counter + 1) % (2 * a)
+end
 
+local interval_ms = 50
+
+local timer = vim.uv.new_timer()
+
+vim.uv.new_timer()
 local spans = {
-  {{ 1, 0, -1 }},
-  {{ 3, 0, -1 }},
-  {{ 6, 0, 59 }, { 19, 59, 89 }, { 3, 89, -1 }},
-  {{ 7, 0, 61 }, { 20, 61, -1 }},
-  {{ 8, 0, 44 }, { 26, 44, 47 }, { 13, 47, 89 }, { 21, 89, 118 }, { 1, 118, -1 }},
-  {{ 9, 0, 42 }, { 14, 42, 94 }, { 22, 94, 120 }, { 2, 120, -1 }, },
-  {{ 10, 0, 42 }, { 15, 42, 61 }, { 26, 61, 74 }, { 15, 74, 100 }, { 23, 100, 124 }, { 3, 124, -1 }},
-  {{ 11, 0, 45 }, { 16, 45, 108 }, { 24, 108, 128 }, { 4, 128, -1 }},
-  {{ 12, 0, 42 }, { 17, 42, 106 }, { 25, 106, 124 }, { 5, 124, -1 }},
-  {{ 26, 0, 100 }, { 18, 100, -1 }},
-  {{ 1, 0, -1 }},
-  {{ 1, 0, -1 }},
-  {{ 1, 0, -1 }},
-  {{ 1, 0, -1 }},
+  { { 1, 0, -1 } },
+  { { 3, 0, -1 } },
+  { { 6, 0, 59 },   { 19, 59, 89 },  { 3, 89, -1 } },
+  { { 7, 0, 61 },   { 20, 61, -1 } },
+  { { 8, 0, 44 },   { 26, 44, 47 },  { 13, 47, 89 },   { 21, 89, 118 }, { 1, 118, -1 } },
+  { { 9, 0, 42 },   { 14, 42, 94 },  { 22, 94, 120 },  { 2, 120, -1 }, },
+  { { 10, 0, 42 },  { 15, 42, 61 },  { 26, 61, 74 },   { 15, 74, 100 }, { 23, 100, 124 }, { 3, 124, -1 } },
+  { { 11, 0, 45 },  { 16, 45, 108 }, { 24, 108, 128 }, { 4, 128, -1 } },
+  { { 12, 0, 42 },  { 17, 42, 106 }, { 25, 106, 124 }, { 5, 124, -1 } },
+  { { 26, 0, 100 }, { 18, 100, -1 } },
+  { { 1, 0, -1 } },
+  { { 1, 0, -1 } },
+  { { 1, 0, -1 } },
+  { { 1, 0, -1 } },
 }
 
-local header = {}
+local content = {}
 
 for i = 1, #texts do
   local hl = {}
   for _, span in ipairs(spans[i]) do
-    table.insert(hl, {"Header"..span[1], span[2], span[3]})
+    table.insert(hl, { "Header" .. span[1], span[2], span[3] })
   end
-  table.insert(header, {
+  table.insert(content, {
     type = 'text',
     val = texts[i],
     opts = {
@@ -106,4 +125,12 @@ for i = 1, #texts do
   })
 end
 
-return header
+return {
+  content = content,
+  anim_start = function()
+    _ = timer and timer:start(interval_ms, interval_ms, vim.schedule_wrap(timeout))
+  end,
+  anim_stop = function()
+    _ = timer and timer:stop()
+  end,
+}

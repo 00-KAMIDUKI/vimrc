@@ -12,7 +12,7 @@ return {
     },
     config = function(_, opts)
       local esc = vim.api.nvim_replace_termcodes('<ESC>', true, false, true)
-      local api = require('Comment.api')
+      local api = require 'Comment.api'
 
       vim.keymap.set('v', '/', function()
         vim.api.nvim_feedkeys(esc, 'nx', false)
@@ -35,7 +35,7 @@ return {
   {
     'kevinhwang91/nvim-ufo',
     dependencies = {
-      'kevinhwang91/promise-async'
+      'kevinhwang91/promise-async',
     },
     main = 'ufo',
     opts = {
@@ -43,8 +43,8 @@ return {
       provider_selector = function(bufnr, filetype, buftype)
         if buftype == 'nofile' then return '' end
         return nil
-      end
-    }
+      end,
+    },
   },
   {
     'folke/todo-comments.nvim', -- TODO: make this work with nvim-scrollbar
@@ -100,36 +100,33 @@ return {
   --     end)
   --   end
   -- },
+  -- BUG: this plugin fucks up ModeChanged event of visual mode?
   {
     'folke/which-key.nvim',
     event = "VeryLazy",
-    config = function()
-      vim.o.timeout = true
-      vim.o.timeoutlen = 300
-      local which_key = require 'which-key'
-      which_key.register({
-        ['<leader>f'] = {
-          name = 'Find',
-        },
-        ['<leader>d'] = {
-          name = 'Debug',
-        },
-        ['<leader>c'] = {
-          name = 'Color Picker',
-        },
-        ['<space>ca'] = {
-          name = 'Code Action',
-        },
-        ['<space>w'] = {
-          name = 'Workspace',
-        },
-        ['<space>r'] = {
-          name = 'Refactor',
-        },
-      }, { mode = 'n' })
-    end,
+    keys = {
+      {
+        "<leader>?",
+        function() require("which-key").show { global = false } end,
+        desc = "Buffer Local Keymaps (which-key)",
+      },
+    },
+    opts = {
+      win = {
+        no_overlap = false,
+      },
+      spec = {
+        { "<leader>f", group = 'Find' },
+        { "<leader>c", group = 'Color Picker', icon = '' },
+        { "<leader>d", group = 'Debug', mode = 'nv' },
+        { "<leader>a", icon = "󰕮" },
+        { "<leader>/", icon = "" },
+        { "<space>r", group = 'Refactor', mode = 'nv', icon = '󰻸' },
+      },
+    },
   },
   {
+    -- TODO: add callback on clicking the virtual text
     'brenoprata10/nvim-highlight-colors',
     opts = {
       render = 'virtual',
@@ -220,7 +217,6 @@ return {
     "folke/flash.nvim",
     event = "VeryLazy",
     opts = {},
-    -- stylua: ignore
     keys = {
       { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
       { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },

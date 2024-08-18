@@ -1,4 +1,4 @@
----@alias Diagnostics {errors: number, warnings: number, infos: number, hints: number}
+---@alias Diagnostics { errors: number, warnings: number, infos: number, hints: number }
 
 ---@param diagnostics Diagnostics
 ---@return number
@@ -19,14 +19,17 @@ end
 ---@param diagnostics Diagnostics
 ---@return number
 local function diagnostic_count(diagnostics)
-  return diagnostics.errors + diagnostics.warnings + diagnostics.infos + diagnostics.hints
+  return diagnostics.errors
+      + diagnostics.warnings
+      + diagnostics.infos
+      + diagnostics.hints
 end
 
 local diagnostic_hl = {
-  'LspDiagnosticsError',
-  'LspDiagnosticsWarning',
-  'LspDiagnosticsInformation',
-  'LspDiagnosticsHint',
+  'DiagnosticError',
+  'DiagnosticWarn',
+  'DiagnosticInfo',
+  'DiagnosticHint',
 }
 
 -- local diagnostic_signs = {
@@ -46,64 +49,52 @@ local head = {
 }
 
 local icon = {
-  text = function(buffer)
-    return require 'nvim-web-devicons'.get_icon(buffer.filename)
-  end,
-  fg = function(buffer)
-    local _, hl = require 'nvim-web-devicons'.get_icon(buffer.filename)
-    return hl
-  end,
+  text = function(buffer) return buffer.devicon.icon end,
+  fg = function(buffer) return buffer.devicon.color end,
 }
 
 local prefix = {
-  text = function(buffer)
-    return buffer.unique_prefix
-  end,
-  fg = function()
-    return require('cokeline.hlgroups').get_hl_attr("Comment", "fg")
-  end,
+  text = function(buffer) return buffer.unique_prefix end,
+  fg = 'Comment',
+  underline = function(buffer) return buffer.is_hovered end,
   italic = true,
 }
 
 local filename = {
-  text = function(buffer)
-    return buffer.filename
-  end,
+  text = function(buffer) return buffer.filename end,
   bold = function(buffer) return buffer.is_focused end,
+  underline = function(buffer) return buffer.is_hovered end,
   fg = function(buffer)
-    local severity = diagnostic_severity(buffer.diagnostics)
-    return diagnostic_hl[severity]
+    return diagnostic_hl[diagnostic_severity(buffer.diagnostics)]
   end,
 }
 
 local diag_count = {
   text = function(buffer)
     local count = diagnostic_count(buffer.diagnostics)
-    if count > 0 then
-      return count
-    end
-    return ""
+    return count > 0 and count or ""
   end,
   fg = function(buffer)
-    local severity = diagnostic_severity(buffer.diagnostics)
-    return diagnostic_hl[severity]
+    return diagnostic_hl[diagnostic_severity(buffer.diagnostics)]
   end,
 }
 
 local close_icon = {
   text = function(buffer)
-    if buffer.is_modified then
-      return ""
-    end
-    if buffer.is_hovered then
-      return "󰅙"
-    end
+    if buffer.is_modified then return "" end
+    if buffer.is_hovered then return "󰅙" end
     return "󰅖"
   end,
-  on_click = function(_, _, _, _, buffer)
-    buffer:delete()
-  end,
+  on_click = function(_, _, _, _, buffer) buffer:delete() end,
 }
+
+local default_hl = function(buffer)
+  return buffer.is_focused
+      and 'Visual'
+      or require 'utils.transparent_background'
+      and 'Normal'
+      or 'StatusLine'
+end
 
 return {
   'willothy/nvim-cokeline',
@@ -115,21 +106,9 @@ return {
       end,
     },
     rhs = {
-      {
-        text = '  ',
-        bg = 'NONE',
-        fg = vim.api.nvim_get_hl(0, { name = 'Normal' }).fg,
-      },
-      {
-        text = '  ',
-        bg = 'NONE',
-        fg = vim.api.nvim_get_hl(0, { name = 'Normal' }).fg,
-      },
-      {
-        text = '  ',
-        bg = 'NONE',
-        fg = vim.api.nvim_get_hl(0, { name = 'Normal' }).fg,
-      },
+      { text = '  ', bg = 'Normal', fg = 'Normal' },
+      { text = '  ', bg = 'Normal', fg = 'Normal' },
+      { text = '  ', bg = 'Normal', fg = 'Normal' },
     },
     sidebar = {
       filetype = { 'neo-tree' },
@@ -142,16 +121,13 @@ return {
             return label .. (' '):rep(win_width - #label - 2)
           end
         },
-        {
-          text = '',
-        },
+        { text = '', },
       },
     },
     components = {
       head,
       padding,
       icon,
-      padding,
       prefix,
       filename,
       padding,
@@ -161,10 +137,9 @@ return {
       padding,
     },
     default_hl = {
-      fg = 'NONE',
-      bg = function(buffer)
-        return buffer.is_focused and "TabLineSel" or "TabLine"
-      end,
+      fg = default_hl,
+      bg = default_hl,
     },
+    fill_hl = 'Normal',
   },
 }

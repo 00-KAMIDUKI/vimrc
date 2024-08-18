@@ -1,7 +1,20 @@
 return {
-  require 'plugins.ui.lualine',
+  -- require 'plugins.ui.lualine',
+  require 'plugins.ui.heirline',
+  -- require 'plugins.ui.feline',
   require 'plugins.ui.cokeline',
   require 'plugins.ui.statuscol',
+  require 'plugins.ui.alpha',
+  -- {
+  --   'echasnovski/mini.icons',
+  --   config = function (_, opts)
+  --     require('mini.icons').setup(opts)
+  --     MiniIcons.mock_nvim_web_devicons()
+  --   end,
+  --   opts = {
+  --     style = 'ascii',
+  --   },
+  -- },
   {
     'kyazdani42/nvim-web-devicons',
     lazy = true,
@@ -9,10 +22,16 @@ return {
       override = {
         yuck = {
           icon = "",
-          color = "#6d8086",
+          -- color = "#6d8086",
+          color = "#b49a44",
           cterm_color = "66",
-          name = "Yuck"
-        }
+          name = "Yuck",
+        },
+        ['.gitignore'] = {
+          icon = "",
+          color = "#e84b39",
+          name = "GitIgnore",
+        },
       },
       default = true,
     },
@@ -77,91 +96,11 @@ return {
   {
     'lewis6991/gitsigns.nvim',
     lazy = true,
-    config = true,
+    opts = {},
   },
   {
     'Bekaboo/dropbar.nvim',
     config = true,
-  },
-  {
-    'goolord/alpha-nvim',
-    config = function()
-      vim.keymap.set('n', '<leader>a', '<cmd>Alpha<CR>', { desc = 'Dashboard' })
-
-      local dashboard = require('alpha.themes.dashboard')
-
-      vim.api.nvim_set_hl(0, "HeaderNvimVersion", { fg = '#98c09d' })
-      vim.api.nvim_set_hl(0, "HeaderPackages", { fg = '#c7b48a' })
-      vim.api.nvim_set_hl(0, "HeaderGithub", { fg = '#b094bf' })
-
-      dashboard.section.buttons.val = {
-        dashboard.button('a', '   new file', '<cmd>bd<CR>'),
-        dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
-        dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
-        dashboard.button('r', '   restore', require('utils.session').load_last_session),
-        dashboard.button('s', '   sessions', require('utils.session').select_project),
-        dashboard.button('c', '   configure', '<cmd>exe "edit " . stdpath("config")<CR>'),
-        dashboard.button('q', '   quit', '<cmd>q<CR>'),
-      }
-      for _, button in ipairs(dashboard.section.buttons.val) do
-        button.opts.hl = 'Function'
-      end
-
-      local version = vim.version()
-      version = (" %d.%d.%d"):format(version.major, version.minor, version.patch)
-
-      local package_info = '󰏖 ' .. require('lazy').stats().loaded .. ' loaded'
-      dashboard.section.buttons.opts.spacing = 1
-
-      local icons = {
-        "",
-        "󱢇",
-        "",
-        "",
-        "󰲒",
-        "󰣚",
-        "󰼁",
-        "󱃽",
-        "󰗃",
-        "",
-        "",
-        "",
-        "󰣇",
-        "󰚄",
-        "󱢴",
-        "󱐂",
-        "󱣼",
-        "󰩈",
-        "󱐋",
-        "󰍳",
-        "󰼾",
-        "",
-      }
-      local fortune = require('alpha.fortune')
-      dashboard.section.footer.val = fortune({
-        max_width = 60,
-      })
-
-      table.remove(dashboard.section.footer.val, 1)
-      dashboard.section.footer.val[1] = icons[math.random(#icons)] .. ' ' .. dashboard.section.footer.val[1]
-
-      dashboard.opts.layout = {
-        { type = "group",   val = require('utils.header') },
-        {
-          type = "text",
-          val = version .. '    ' .. package_info .. '    lunedepapier',
-          opts = {
-            position = "center",
-            hl = { { "HeaderNvimVersion", 0, #version }, { "HeaderPackages", #version, #version + #package_info + 4 }, { "HeaderGithub", #version + #package_info + 4, -1 } },
-          }
-        },
-        { type = 'padding', val = 1, },
-        dashboard.section.buttons,
-        dashboard.section.footer,
-      }
-
-      require 'alpha'.setup(dashboard.opts)
-    end,
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
@@ -174,10 +113,19 @@ return {
       require('neo-tree').setup(opts)
     end,
     opts = {
+      close_if_last_window = true,
       open_files_do_not_replace_types = {
         "toggleterm",
         "noice",
         "trouble",
+      },
+      default_component_configs = {
+        modified = {
+          symbol = "󰤌",
+        },
+        symlink_target = {
+          enabled = true,
+        },
       },
       filesystem = {
         window = {
@@ -222,12 +170,19 @@ return {
         },
         {
           filter = {
-            event = 'msg_show',
-            kind = '',
-            find = '--No',
+            event = 'notify',
+            kind = 'info',
+            find = 'tree INFO', -- fuck neotree
           },
-          opts = { skip = true },
         },
+        -- {
+        --   filter = {
+        --     event = 'msg_show',
+        --     kind = '',
+        --     find = '--No',
+        --   },
+        --   opts = { skip = true },
+        -- },
       },
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
@@ -319,4 +274,3 @@ return {
   --   config = true,
   -- }
 }
-
