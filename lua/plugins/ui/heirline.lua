@@ -37,6 +37,7 @@ return {
             t = 'label',
             c = 'constant',
             R = '@variable.builtin',
+            [''] = '@variable.parameter'
           })[vim.fn.mode()] or 'DevIconBazel').fg
         }
       end,
@@ -179,15 +180,19 @@ return {
       },
       ---@param self { text: string, fg: string }
       init = function(self)
-        local ft = vim.bo.filetype
-        local text, fg = require 'nvim-web-devicons'.get_icon_color_by_filetype(ft, {
-          default = false,
-        })
-        if text then
-          self.text = text .. ' '
-          self.fg = fg
-          return
+        if vim.bo.buftype == '' then
+          local filename = vim.fn.expand '%:t'
+          local icon, fg = require 'nvim-web-devicons'.get_icon_color(filename, nil, {
+            default = false,
+          })
+          if icon then
+            self.text = icon .. ' '
+            self.fg = fg
+            return
+          end
         end
+
+        local ft = vim.bo.filetype
         local entry = filetype_icon_lut[ft]
         if entry then
           self.text = entry.icon
