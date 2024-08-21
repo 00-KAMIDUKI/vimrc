@@ -18,4 +18,3 @@ require('lazy').setup("plugins", {
   },
 })
 
-require('utils.defer').run()
