@@ -37,7 +37,7 @@ for _, key in ipairs { 'n', 'N', '*', '#' } do
     vim.opt_local.hlsearch = true
     local _, err = pcall(vim.api.nvim_command, 'silent normal! ' .. key)
     if err then
-      vim.notify(err:match(': (.*)'), vim.log.levels.WARN)
+      vim.notify(err:match ': (.*)', vim.log.levels.WARN)
     end
   end)
 end
@@ -68,3 +68,22 @@ vim.keymap.set('n', 'q:', '<Nop>')
 
 vim.keymap.set('n', 'u', function() vim.cmd [[silent undo]] end, opts 'undo')
 vim.keymap.set('n', '', function() vim.cmd [[silent redo]] end, opts 'redo')
+
+vim.keymap.set('n', '<CR>', function()
+  -- TODO: ...
+end, opts 'Incremental Selection')
+
+vim.keymap.set('n', '<C-LeftMouse>', function()
+  vim.cmd [[exe "silent normal! \<LeftMouse>"]]
+
+  local uri = vim.fn.expand "<cfile>"
+  if uri:match 'https?://' then
+    vim.ui.open(uri)
+    return
+  end
+
+  local _, err = pcall(vim.api.nvim_command, [[silent normal! ]])
+  if err then vim.notify(err:match ': (.*)', vim.log.levels.WARN) end
+end, opts 'Open URI or Jump to Definition')
+
+-- https://www.google.com.
