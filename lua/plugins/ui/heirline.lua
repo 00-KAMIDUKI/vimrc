@@ -1,4 +1,3 @@
--- TODO: copilot
 return {
   "rebelot/heirline.nvim",
   config = function()
@@ -8,18 +7,18 @@ return {
 
     local function default_fg()
       if color_cache.default_fg == nil then
-        color_cache.default_fg = require 'utils.transparent_background'
+        color_cache.default_fg = require 'utils.transparent'.value
             and utils.get_highlight('Normal').fg
-            or utils.get_highlight('StatusLine').fg
+            or utils.get_highlight('CursorLine').fg
       end
       return color_cache.default_fg
     end
 
     local function default_bg()
       if color_cache.default_bg == nil then
-        color_cache.default_bg = require 'utils.transparent_background'
+        color_cache.default_bg = require 'utils.transparent'.value
             and 'NONE'
-            or utils.get_highlight('StatusLine').bg
+            or utils.get_highlight('CursorLine').bg
       end
       return color_cache.default_bg
     end
@@ -165,7 +164,6 @@ return {
 
     local filetype_icon_lut = {
       help                = { icon = ' ', fg = '#def023' },
-      vim                 = { icon = ' ', fg = '#328A4E' },
       ['neo-tree']        = { icon = '󰙅 ', fg = '#E8C972' },
       toggleterm          = { icon = ' ', fg = '#6A7580' },
       ['TelescopePrompt'] = { icon = ' ', fg = '#c9409e' },
@@ -193,6 +191,15 @@ return {
         end
 
         local ft = vim.bo.filetype
+        local icon, fg = require 'nvim-web-devicons'.get_icon_color_by_filetype(ft, {
+          default = false,
+        })
+        if icon then
+          self.text = icon .. ' '
+          self.fg = fg
+          return
+        end
+
         local entry = filetype_icon_lut[ft]
         if entry then
           self.text = entry.icon

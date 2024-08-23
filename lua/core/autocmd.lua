@@ -90,3 +90,18 @@ vim.api.nvim_create_user_command("MakeDirectory", function()
   end
 end, { desc = "Create directory if it doesn't exist" })
 
+vim.api.nvim_create_user_command('ToggleTransparent', require 'utils.transparent'.toggle, {})
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+  callback = function()
+    for _, name in ipairs {
+      'SpellBad',
+      'SpellCap',
+      'SpellLocal',
+      'SpellRare',
+    } do
+      vim.cmd('hi! ' .. name .. ' guifg=none')
+    end
+  end,
+  desc = 'Set transparent background for some highlight groups.',
+})

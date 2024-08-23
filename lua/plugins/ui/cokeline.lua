@@ -89,11 +89,7 @@ local close_icon = {
 }
 
 local default_hl = function(buffer)
-  return buffer.is_focused
-      and 'Visual'
-      or require 'utils.transparent_background'
-      and 'Normal'
-      or 'StatusLine'
+  return buffer.is_focused and 'Visual' or 'CursorLine'
 end
 
 return {

@@ -14,7 +14,15 @@ vim.opt.runtimepath:prepend(lazypath)
 
 require('lazy').setup("plugins", {
   install = {
-    colorscheme = { vim.g.colors_name or 'default' }
+    colorscheme = { require 'utils.storage'.data().colorscheme },
+  },
+  dev = {
+    path = "~/repo/nvim-plugin",
+    patterns = {
+      'copilot.lua'
+    },
+  },
+  change_detection = {
+    enabled = false,
   },
 })
-
