@@ -1,5 +1,5 @@
-local client = require('copilot.client')
-local api = require('copilot.api')
+local client = require 'copilot.client'
+local api = require 'copilot.api'
 
 return function()
   if client.is_disabled()
