@@ -1,4 +1,0 @@
-nvim-cmp is slow, replace it with coq_nvim
-nvim-neo-tree taking too much time to startup, replace it with chadtree
-sort sessions by lru
-refactor configuration structure
