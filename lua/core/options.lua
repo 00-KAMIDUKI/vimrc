@@ -56,4 +56,3 @@ vim.o.foldlevel = 99      -- Using ufo provider need a large value, feel free to
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
-require('utils.set_diag_signs')()
