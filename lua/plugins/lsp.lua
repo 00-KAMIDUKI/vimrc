@@ -202,49 +202,28 @@ return {
           -- Buffer local mappings.
           -- See `:help vim.lsp.*` for documentation on any of the below functions
           local opts = function(desc) return { buffer = ev.buf, desc = desc, noremap = false } end
+          local telescope = {
+            builtin = require 'telescope.builtin',
+          }
           vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts "Goto Declaration")
-          vim.keymap.set('n', 'gd', require 'telescope.builtin'.lsp_definitions, opts "Goto Definition")
+          vim.keymap.set('n', 'gd', telescope.builtin.lsp_definitions, opts "Goto Definition")
           vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts "Lsp Hover")
-          vim.keymap.set('n', 'gi', require 'telescope.builtin'.lsp_implementations, opts "Goto Implementation")
+          vim.keymap.set('n', 'gi', telescope.builtin.lsp_implementations, opts "Goto Implementation")
           -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts "Signature Help")
           vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts "Add Workspace Folder")
           vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts "Remove Workspace Folder")
           vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
             opts "List Workspace Folders")
-          vim.keymap.set('n', '<space>D', require 'telescope.builtin'.lsp_type_definitions, opts "Type Definition")
+          vim.keymap.set('n', '<space>D', telescope.builtin.lsp_type_definitions, opts "Type Definition")
           vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts "Rename")
-          -- vim.keymap.set('n', '<space>rn', function()
-          --   local cword = vim.fn.expand('<cword>')
-          --   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(':IncRename ' .. cword, true, false, true), 'n', false)
-          -- end, opts "Rename")
           vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts "Code Action")
-          vim.keymap.set('n', 'gr', require 'telescope.builtin'.lsp_references, opts "Goto Reference")
+          vim.keymap.set('n', 'gr', telescope.builtin.lsp_references, opts "Goto Reference")
           vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts "Format Code")
           vim.lsp.inlay_hint.enable(true)
         end,
       })
     end,
   },
-  -- {
-  --   "neovim/nvim-lspconfig",
-  --   dependencies = {
-  --     { "ms-jpq/coq_nvim",       branch = "coq" },       -- main one
-  --     { "ms-jpq/coq.artifacts",  branch = "artifacts" }, -- 9000+ Snippets
-  --     -- lua & third party sources
-  --     -- See https://github.com/ms-jpq/coq.thirdparty
-  --     { 'ms-jpq/coq.thirdparty', branch = "3p" }
-  --     -- Need to **configure separately**
-  --     -- - shell repl
-  --     -- - nvim lua api
-  --     -- - scientific calculator
-  --     -- - comment bannerdependencies = {
-  --   },
-  --   init = function()
-  --     vim.g.coq_settings = {
-  --       auto_start = true,
-  --     }
-  --   end,
-  -- },
   {
     'hrsh7th/nvim-cmp',
     event = { 'InsertEnter', 'CmdlineEnter' },
@@ -261,8 +240,8 @@ return {
 
     config = function()
       require('luasnip.loaders.from_vscode').lazy_load()
-      local cmp = require('cmp')
-      local luasnip = require('luasnip')
+      local cmp = require 'cmp'
+      local luasnip = require 'luasnip'
       cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
 
       -- local has_words_before = function()
@@ -366,25 +345,44 @@ return {
       })
     end,
   },
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   event = 'InsertEnter',
+  --   opts = {
+  --     suggestion = {
+  --       enabled = true,
+  --       auto_trigger = true,
+  --       keymap = {
+  --         accept = "<C-S-l>",
+  --         accept_word = false,
+  --         accept_line = "<C-l>",
+  --         next = "<M-]>",
+  --         prev = "<M-[>",
+  --         dismiss = "<C-]>",
+  --       },
+  --     },
+  --     filetypes = {
+  --       ["*"] = true,
+  --     },
+  --   },
+  -- },
   {
-    'zbirenbaum/copilot.lua',
-    event = 'VeryLazy',
+    'luozhiya/fittencode.nvim',
+    event = 'InsertEnter',
     opts = {
-      suggestion = {
-        enabled = true,
-        auto_trigger = true,
-        keymap = {
-          accept = "<C-S-l>",
-          accept_word = false,
-          accept_line = "<C-l>",
-          next = "<M-]>",
-          prev = "<M-[>",
-          dismiss = "<C-]>",
-        },
+      action = {
+        identify_programming_language = { identify_buffer = false, },
       },
-      filetypes = {
-        ["*"] = true,
-      }
+      inline_completion = {
+        auto_triggering_completion = false,
+      },
+      keymaps = {
+        inline = {
+          ['<C-S-L>'] = 'accept_all_suggestions',
+          ['<C-L>'] = 'accept_line',
+          ['<C-Bslash>'] = 'triggering_completion',
+        }
+      },
     },
   },
   -- {
