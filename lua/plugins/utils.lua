@@ -34,6 +34,7 @@ return {
   },
   {
     'kevinhwang91/nvim-ufo',
+    event = "VeryLazy",
     dependencies = {
       'kevinhwang91/promise-async',
     },
@@ -52,6 +53,7 @@ return {
   },
   {
     "sindrets/diffview.nvim",
+    event = "VeryLazy",
     config = true
   },
   {
@@ -88,10 +90,10 @@ return {
       },
     },
   },
-  {
-    'famiu/bufdelete.nvim',
-    lazy = true,
-  },
+  -- {
+  --   'famiu/bufdelete.nvim',
+  --   lazy = true,
+  -- },
   -- {
   --   "soulis-1256/eagle.nvim",
   --   config = function()
@@ -117,11 +119,23 @@ return {
       },
       spec = {
         { "<leader>f", group = 'Find' },
-        { "<leader>c", group = 'Color Picker', icon = '' },
+        { "<leader>c", group = 'Color Picker', icon = { icon = ' ', color = 'Include' } },
         { "<leader>d", group = 'Debug', mode = 'nv' },
-        { "<leader>a", icon = "󰕮" },
-        { "<leader>/", icon = "" },
-        { "<space>r", group = 'Refactor', mode = 'nv', icon = '󰻸' },
+        { "<leader>a", icon = { icon = "󰕮 ", hl = 'Operator' } },
+        { "<leader>/", icon = { icon = " ", hl = 'String' } },
+        { "<space>r", group = 'Refactor', mode = 'nv', icon = { icon = '󰛨', hl = 'WarningMsg' } },
+      },
+      icons = {
+        rules = {
+          { pattern = 'debug', icon = ' ', color = 'red' },
+          { pattern = 'next', icon = '󰙡 ', color = 'azure' },
+          { pattern = 'prev', icon = '󰙣 ', color = 'azure' },
+          { pattern = 'terminal', icon = ' ', color = 'red' },
+          { pattern = 'left', icon = ' ', color = 'azure' },
+          { pattern = 'right', icon = ' ', color = 'azure' },
+          { pattern = 'up', icon = ' ', color = 'azure' },
+          { pattern = 'down', icon = ' ', color = 'azure' },
+        },
       },
     },
   },

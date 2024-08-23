@@ -1,7 +1,8 @@
 return {
   'luukvbaal/statuscol.nvim',
+  event = 'VeryLazy',
   config = function()
-    local builtin = require("statuscol.builtin")
+    local builtin = require "statuscol.builtin"
     require('statuscol').setup {
       ft_ignore = {
         'neo-tree'
