@@ -9,6 +9,14 @@ return {
     local telescope = require 'telescope'
 
     telescope.setup {
+      defaults = {
+        mappings = {
+          i = {
+            ["<C-Down>"] = require('telescope.actions').cycle_history_next,
+            ["<C-Up>"] = require('telescope.actions').cycle_history_prev,
+          },
+        },
+      },
       pickers = {
         colorscheme = {
           enable_preview = true,
@@ -18,6 +26,9 @@ return {
         ["ui-select"] = { require("telescope.themes").get_dropdown {} },
       }
     }
+
+    -- HACK: Disable warning message (Telescope colorscheme)
+    require 'telescope.utils'.__warn_no_selection = function() end
 
     telescope.load_extension('ui-select')
 
