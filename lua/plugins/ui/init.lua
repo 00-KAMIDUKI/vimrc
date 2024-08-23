@@ -15,6 +15,8 @@ return {
   --     style = 'ascii',
   --   },
   -- },
+  -- TODO: replace this with mini.icons because
+  -- the way to configure it is confusing
   {
     'kyazdani42/nvim-web-devicons',
     lazy = true,
@@ -22,8 +24,7 @@ return {
       override = {
         yuck = {
           icon = "",
-          -- color = "#6d8086",
-          color = "#b49a44",
+          color = "#b49a49",
           cterm_color = "66",
           name = "Yuck",
         },
@@ -32,59 +33,50 @@ return {
           color = "#e84b39",
           name = "GitIgnore",
         },
+        vim = {
+          icon = '',
+          color = '#38C765',
+          name = 'Vim',
+        },
       },
       default = true,
     },
   },
   {
-    'lukas-reineke/indent-blankline.nvim',
-    main = 'ibl',
+    'nvimdev/indentmini.nvim',
     opts = {
-      indent = { char = '▏' },
-      scope = { highlight = 'Function', show_start = false, show_end = false },
+      char = '▏',
     },
+    main = 'indentmini',
+    config = function(spec, opts)
+      require(spec.main).setup(opts)
+
+      local function set_hl()
+        vim.api.nvim_set_hl(0, 'IndentLine', { link = 'Comment' })
+        vim.api.nvim_set_hl(0, 'IndentLineCurrent', { link = 'Function' })
+      end
+
+      set_hl()
+      vim.api.nvim_create_autocmd('Colorscheme', {
+        callback = set_hl,
+        desc = 'Set IndentLine highlights',
+      })
+    end,
   },
   {
     'RRethy/vim-illuminate',
+    events = 'VeryLazy',
     config = function()
       require 'illuminate'.configure {
         filetypes_denylist = {},
       }
-      if not vim.g.neovide then
-        vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
-        vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
-        vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
-      end
+      -- if not vim.g.neovide then
+      --   vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
+      --   vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
+      --   vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
+      -- end
     end,
   },
-  -- {
-  --   'akinsho/bufferline.nvim',
-  --   -- cond = not vim.g.neovide,
-  --   opts = {
-  --     options = {
-  --       themable = true,
-  --       offsets = {
-  --         {
-  --           filetype = 'neo-tree',
-  --           text = vim.g.neovide and 'EXPLORER                 ' or 'FILE EXPLORER',
-  --           text_align = 'center',
-  --           seperator = true,
-  --         }
-  --       },
-  --       diagnostics = 'nvim_lsp',
-  --       truncate_names = true,
-  --       separator_style = 'thin',
-  --       diagnostics_indicator = function(count, level)
-  --         local icon = level:match("error") and " " or
-  --             level:match("warning") and " " or " "
-  --         return " " .. icon .. count
-  --       end,
-  --       close_command = function(bufnum)
-  --         require('bufdelete').bufdelete(bufnum, true)
-  --       end,
-  --     },
-  --   },
-  -- },
   {
     'petertriho/nvim-scrollbar',
     opts = {
@@ -138,6 +130,7 @@ return {
         follow_current_file = {
           enable = true,
         },
+        use_libuv_file_watcher = true,
       },
     },
   },
@@ -170,19 +163,18 @@ return {
         },
         {
           filter = {
+            event = 'msg_show',
+            kind = '',
+            find = "No lines", -- No lines in buffer
+          },
+        },
+        {
+          filter = {
             event = 'notify',
             kind = 'info',
             find = 'tree INFO', -- fuck neotree
           },
         },
-        -- {
-        --   filter = {
-        --     event = 'msg_show',
-        --     kind = '',
-        --     find = '--No',
-        --   },
-        --   opts = { skip = true },
-        -- },
       },
       lsp = {
         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
