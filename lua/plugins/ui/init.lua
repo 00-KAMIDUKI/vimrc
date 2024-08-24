@@ -53,6 +53,7 @@ return {
 
       local function set_hl()
         vim.api.nvim_set_hl(0, 'IndentLine', { link = 'Comment' })
+        vim.api.nvim_set_hl(0, 'IndentLineCurHide', { link = 'Comment' })
         vim.api.nvim_set_hl(0, 'IndentLineCurrent', { link = 'Function' })
       end
 
