@@ -1,7 +1,18 @@
 return {
   'goolord/alpha-nvim',
+  cmd = 'Alpha',
+  event = 'User Dashboard',
+  init = function()
+    if vim.fn.argc() > 0 then return end
+    vim.api.nvim_exec_autocmds("User", {
+      pattern = 'Dashboard',
+    })
+  end,
+  keys = {
+    { '<leader>a', '<cmd>Alpha<CR>', { desc = 'Dashboard' } },
+  },
   config = function()
-    vim.keymap.set('n', '<leader>a', '<cmd>Alpha<CR>', { desc = 'Dashboard' })
+    vim.o.statusline='%#Normal#'
 
     local dashboard = require 'alpha.themes.dashboard'
     local header = require 'utils.header'

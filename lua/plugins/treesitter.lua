@@ -1,5 +1,6 @@
 return {
   'nvim-treesitter/nvim-treesitter',
+  event = 'User FileOpened',
   main = 'nvim-treesitter.configs',
   build = ":TSUpdate",
   opts = {

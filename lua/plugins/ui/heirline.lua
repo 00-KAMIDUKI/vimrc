@@ -1,5 +1,6 @@
 return {
   "rebelot/heirline.nvim",
+  event = "User FileOpened",
   config = function()
     local utils = require "heirline.utils"
 

@@ -56,14 +56,8 @@ local duplicates = {
 return {
   {
     'neovim/nvim-lspconfig',
-    dependencies = {
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig',
-      'folke/trouble.nvim',
-      'folke/neodev.nvim',
-    },
+    event = 'User FileOpened',
     config = function()
-      vim.lsp.set_log_level 'ERROR'
       require 'lspconfig.ui.windows'.default_options = {
         border = {
           { '┌', 'NormalFloat' },
@@ -77,22 +71,61 @@ return {
         },
       }
 
-      require('mason').setup()
+      vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, { desc = "Lsp Diagnostic Float" })
+      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Lsp Next Diagnostic" })
+      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Lsp Previous Diagnostic" })
+      vim.keymap.set('n', '<space>q', function() require 'trouble'.toggle 'diagnostics' end, {
+        desc = "Lsp Diagnostic List"
+      })
+
+      require 'utils.servers'.setup_locally_installed()
+
+      vim.api.nvim_create_autocmd('LspAttach', {
+        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+        callback = function(args)
+          -- local client = vim.lsp.get_client_by_id(args.data.client_id)
+          -- if client then require 'utils.document_highlight'(client, args.buf) end
+
+          -- Enable completion triggered by <c-x><c-o>
+          vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+          -- Buffer local mappings.
+          -- See `:help vim.lsp.*` for documentation on any of the below functions
+          local opts = function(desc) return { buffer = args.buf, desc = desc, noremap = false } end
+          local telescope = {
+            builtin = require 'telescope.builtin',
+          }
+          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts "Goto Declaration")
+          vim.keymap.set('n', 'gd', telescope.builtin.lsp_definitions, opts "Goto Definition")
+          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts "Lsp Hover")
+          vim.keymap.set('n', 'gi', telescope.builtin.lsp_implementations, opts "Goto Implementation")
+          -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts "Signature Help")
+          vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts "Add Workspace Folder")
+          vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts "Remove Workspace Folder")
+          vim.keymap.set('n', '<space>wl', function() vim.print(vim.lsp.buf.list_workspace_folders()) end,
+            opts "List Workspace Folders")
+          vim.keymap.set('n', '<space>D', telescope.builtin.lsp_type_definitions, opts "Type Definition")
+          vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts "Rename")
+          vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts "Code Action")
+          vim.keymap.set('n', 'gr', telescope.builtin.lsp_references, opts "Goto Reference")
+          vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts "Format Code")
+          vim.lsp.inlay_hint.enable(true)
+        end,
+      })
+    end,
+  },
+  {
+    'williamboman/mason.nvim',
+    lazy = true,
+    cmd = { 'Mason' },
+    opts = {},
+  },
+  {
+    'williamboman/mason-lspconfig',
+    event = 'User FileOpened',
+    config = function()
       require('mason-lspconfig').setup()
-
-      local lspconfig = require 'lspconfig'
-
-      ---@param server_name string
-      ---@param opts table
-      ---@param update_capability function | nil
-      local function setup_server(server_name, opts, update_capability)
-        -- opts = require 'coq'.lsp_ensure_capabilities(opts)
-        opts.capabilities = require 'cmp_nvim_lsp'.default_capabilities(opts.capabilities)
-        if update_capability and opts.capabilities then
-          update_capability(opts.capabilities)
-        end
-        lspconfig[server_name].setup(opts)
-      end
+      local setup_server = require 'utils.setup_server'
 
       local mason_handlers = {
         function(server_name)
@@ -128,101 +161,17 @@ return {
 
       for server_name, opts in pairs(mason_handlers_additional) do
         mason_handlers[server_name] = function()
-          setup_server(server_name, opts, opts.update_capability)
+          setup_server(server_name, opts)
         end
       end
 
       require('mason-lspconfig').setup_handlers(mason_handlers)
-
-      local servers = {
-        lua_ls = {
-          -- settings = {
-          --   Lua = {
-          --     workspace = {
-          --       library = vim.api.nvim_get_runtime_file("", true),
-          --     },
-          --     diagnostics = {
-          --       globals = { "vim", "NONE" }
-          --     },
-          --   },
-          -- }
-        },
-        rust_analyzer = {},
-        clangd = {
-          cmd = {
-            "clangd",
-            "--header-insertion=never",
-            "--clang-tidy",
-          },
-          update_capabilities = function(capabilities)
-            capabilities.offsetEncoding = "utf-8"
-          end,
-        },
-        -- pyright = {},
-        tsserver = {
-          init_options = {
-            plugins = {
-              {
-                name = '@vue/typescript-plugin',
-                location = '/usr/lib/node_modules/@vue/typescript-plugin',
-                languages = { 'typescript', 'javascript', 'vue' },
-              },
-            },
-          },
-          filetypes = {
-            'javascript',
-            'javascriptreact',
-            'javascript.jsx',
-            'typescript',
-            'typescriptreact',
-            'typescript.tsx',
-            'vue',
-          },
-        },
-        zls = {},
-        hls = {},
-      }
-
-      for server_name, opts in pairs(servers) do
-        setup_server(server_name, opts, opts.update_capabilities)
-      end
-
-      vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, { desc = "Lsp Diagnostic Float" })
-      vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Lsp Next Diagnostic" })
-      vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Lsp Previous Diagnostic" })
-      vim.keymap.set('n', '<space>q', function() require 'trouble'.toggle 'diagnostics' end,
-        { desc = "Lsp Diagnostic List" })
-
-      vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-        callback = function(ev)
-          -- Enable completion triggered by <c-x><c-o>
-          vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
-
-          -- Buffer local mappings.
-          -- See `:help vim.lsp.*` for documentation on any of the below functions
-          local opts = function(desc) return { buffer = ev.buf, desc = desc, noremap = false } end
-          local telescope = {
-            builtin = require 'telescope.builtin',
-          }
-          vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts "Goto Declaration")
-          vim.keymap.set('n', 'gd', telescope.builtin.lsp_definitions, opts "Goto Definition")
-          vim.keymap.set('n', 'K', vim.lsp.buf.hover, opts "Lsp Hover")
-          vim.keymap.set('n', 'gi', telescope.builtin.lsp_implementations, opts "Goto Implementation")
-          -- vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, opts "Signature Help")
-          vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, opts "Add Workspace Folder")
-          vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, opts "Remove Workspace Folder")
-          vim.keymap.set('n', '<space>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end,
-            opts "List Workspace Folders")
-          vim.keymap.set('n', '<space>D', telescope.builtin.lsp_type_definitions, opts "Type Definition")
-          vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, opts "Rename")
-          vim.keymap.set({ 'n', 'v' }, '<space>ca', vim.lsp.buf.code_action, opts "Code Action")
-          vim.keymap.set('n', 'gr', telescope.builtin.lsp_references, opts "Goto Reference")
-          vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, opts "Format Code")
-          vim.lsp.inlay_hint.enable(true)
-        end,
-      })
     end,
+  },
+  {
+    'folke/trouble.nvim',
+    lazy = true,
+    opts = {},
   },
   {
     'hrsh7th/nvim-cmp',
@@ -242,7 +191,7 @@ return {
       require('luasnip.loaders.from_vscode').lazy_load()
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
-      cmp.event:on('confirm_done', require('nvim-autopairs.completion.cmp').on_confirm_done())
+      cmp.event:on('confirm_done', function() return require('nvim-autopairs.completion.cmp').on_confirm_done() end)
 
       -- local has_words_before = function()
       --   unpack = unpack or table.unpack

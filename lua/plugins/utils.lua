@@ -34,7 +34,7 @@ return {
   },
   {
     'kevinhwang91/nvim-ufo',
-    event = "VeryLazy",
+    event = "User FileOpened",
     dependencies = {
       'kevinhwang91/promise-async',
     },
@@ -48,12 +48,19 @@ return {
     },
   },
   {
-    'folke/todo-comments.nvim', -- TODO: make this work with nvim-scrollbar
+    'folke/todo-comments.nvim',
+    event = "User FileOpened",
     config = true,
   },
   {
     "sindrets/diffview.nvim",
-    event = "VeryLazy",
+    cmd = {
+      'DiffviewLog',
+      'DiffviewOpen',
+      'DiffviewFileHistory',
+      'DiffviewFocusFiles',
+      'DiffviewToggleFiles',
+    },
     config = true
   },
   {
@@ -142,6 +149,7 @@ return {
   {
     -- TODO: add callback on clicking the virtual text
     'brenoprata10/nvim-highlight-colors',
+    event = 'User FileOpened',
     opts = {
       render = 'virtual',
       virtual_symbol = '■',
@@ -229,7 +237,6 @@ return {
   },
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
     opts = {},
     keys = {
       { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },

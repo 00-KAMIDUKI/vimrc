@@ -44,6 +44,7 @@ return {
   },
   {
     'nvimdev/indentmini.nvim',
+    event = 'User FileOpened',
     opts = {
       char = '▏',
     },
@@ -64,22 +65,17 @@ return {
       })
     end,
   },
-  {
-    'RRethy/vim-illuminate',
-    events = 'VeryLazy',
-    config = function()
-      require 'illuminate'.configure {
-        filetypes_denylist = {},
-      }
-      -- if not vim.g.neovide then
-      --   vim.api.nvim_set_hl(0, "IlluminatedWordText", { underline = true })
-      --   vim.api.nvim_set_hl(0, "IlluminatedWordRead", { underline = true })
-      --   vim.api.nvim_set_hl(0, "IlluminatedWordWrite", { underline = true })
-      -- end
-    end,
-  },
+  -- {
+  --   'RRethy/vim-illuminate',
+  --   config = function()
+  --     require 'illuminate'.configure {
+  --       filetypes_denylist = {},
+  --     }
+  --   end,
+  -- },
   {
     'petertriho/nvim-scrollbar',
+    event = 'User FileOpened',
     opts = {
       handlers = {
         gitsigns = true,
@@ -93,18 +89,19 @@ return {
   },
   {
     'Bekaboo/dropbar.nvim',
+    event = 'User FileOpened',
     config = true,
   },
   {
     "nvim-neo-tree/neo-tree.nvim",
+    cmd = 'Neotree',
+    keys = {
+      { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Neotree Toggle' },
+    },
     dependencies = {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
     },
-    config = function(_, opts)
-      vim.keymap.set('n', '<leader>e', '<cmd>Neotree toggle<CR>', { desc = 'Neotree Toggle' })
-      require('neo-tree').setup(opts)
-    end,
     opts = {
       close_if_last_window = true,
       open_files_do_not_replace_types = {
@@ -137,6 +134,7 @@ return {
   },
   {
     "folke/noice.nvim",
+    event = 'VeryLazy',
     opts = {
       presets = {
         inc_rename = true,
@@ -198,6 +196,7 @@ return {
   },
   {
     "rcarriga/nvim-notify",
+    lazy = true,
     opts = {
       render = 'wrapped-compact',
       timeout = 1000,

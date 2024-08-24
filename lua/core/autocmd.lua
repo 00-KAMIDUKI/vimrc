@@ -105,3 +105,9 @@ vim.api.nvim_create_autocmd("ColorScheme", {
   end,
   desc = 'Set transparent background for some highlight groups.',
 })
+
+vim.api.nvim_create_autocmd({ 'BufEnter', 'BufRead' }, {
+  group = vim.api.nvim_create_augroup('FileOpened', {}),
+  callback = require 'utils.on_file_opened',
+})
+

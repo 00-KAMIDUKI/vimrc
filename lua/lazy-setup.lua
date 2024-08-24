@@ -25,4 +25,20 @@ require('lazy').setup("plugins", {
   change_detection = {
     enabled = false,
   },
+  performance = {
+    rtp = {
+      disabled_plugins = {
+        "editorconfig",
+        "gzip",
+        "matchit",
+        "matchparen",
+        "netrwPlugin",
+        "shada",
+        "tarPlugin",
+        "tohtml",
+        "tutor",
+        "zipPlugin",
+      },
+    }
+  },
 })

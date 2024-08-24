@@ -94,6 +94,7 @@ end
 
 return {
   'willothy/nvim-cokeline',
+  event = 'User FileOpened',
   config = true,
   opts = {
     buffers = {

@@ -39,6 +39,7 @@ vim.opt.spelloptions:append "camel"
 
 vim.o.undofile = true
 vim.o.swapfile = false
+vim.o.updatetime = 0 -- CursorHold event
 
 vim.opt.sessionoptions = {
   'buffers',
