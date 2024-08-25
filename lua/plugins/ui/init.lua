@@ -148,7 +148,7 @@ return {
           filter = {
             event = 'msg_show',
             kind = '',
-            find = 'lines --[0-9]*%--',
+            find = 'lines? --[0-9]*%--',
           },
           opts = { skip = true },
         },
