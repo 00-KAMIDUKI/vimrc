@@ -70,7 +70,7 @@ local function load_session(session_file_path)
   -- iterate all buffers and delete buffers that not exists
   for _, buffer in ipairs(vim.fn.getbufinfo()) do
     if vim.fn.filereadable(buffer.name) == 0 then
-      vim.cmd('bdelete ' .. buffer.bufnr)
+      vim.cmd('bdelete! ' .. buffer.bufnr)
     end
   end
   local path = vim.g['NeotreeStatePath']
