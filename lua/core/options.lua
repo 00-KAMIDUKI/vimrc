@@ -18,6 +18,7 @@ vim.o.signcolumn = "auto:1"
 vim.o.wrap = false
 vim.o.cursorline = true
 vim.o.termguicolors = true
+vim.o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,a:-Cursor"
 vim.o.showmode = false
 vim.o.title = true
 vim.o.mousescroll = 'ver:3,hor:3'
@@ -56,4 +57,3 @@ vim.o.foldcolumn = 'auto' -- '0' is not bad
 vim.o.foldlevel = 99      -- Using ufo provider need a large value, feel free to decrease the value
 vim.o.foldlevelstart = 99
 vim.o.foldenable = true
-
