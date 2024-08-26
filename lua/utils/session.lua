@@ -73,9 +73,9 @@ local function load_session(session_file_path)
       vim.cmd('bdelete ' .. buffer.bufnr)
     end
   end
-  local path = vim.api.nvim_get_var 'NeotreeStatePath'
-  local show_hidden = vim.api.nvim_get_var 'NeotreeStateShowHidden' == 1
-  local expanded_nodes = vim.split(vim.api.nvim_get_var 'NeotreeStateExpandedNodes', ':')
+  local path = vim.g['NeotreeStatePath']
+  local show_hidden = vim.g['NeotreeStateShowHidden'] == 1
+  local expanded_nodes = vim.split(vim.g['NeotreeStateExpandedNodes'] or '', ':')
   neotree_state.restore { path = path, show_hidden = show_hidden, expanded_nodes = expanded_nodes }
 end
 
