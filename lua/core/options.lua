@@ -7,7 +7,7 @@ vim.o.expandtab = true
 vim.o.shiftwidth = 2
 vim.o.softtabstop = 2
 
-if vim.fn.argc() > 0 then
+if vim.fn.argc() > 0 and not vim.fn.isdirectory(vim.fn.argv()[1]) then
   vim.o.autochdir = true
 end
 
