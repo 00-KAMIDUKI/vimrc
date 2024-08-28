@@ -134,7 +134,7 @@ return {
   },
   {
     "folke/noice.nvim",
-    event = 'VeryLazy',
+    -- event = 'VeryLazy', -- BUG: flickers
     opts = {
       presets = {
         inc_rename = true,

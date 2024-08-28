@@ -69,10 +69,6 @@ vim.keymap.set('n', 'q:', '<Nop>')
 vim.keymap.set('n', 'u', function() vim.cmd [[silent undo]] end, opts 'undo')
 vim.keymap.set('n', '', function() vim.cmd [[silent redo]] end, opts 'redo')
 
-vim.keymap.set('n', '<CR>', function()
-  -- TODO: ...
-end, opts 'Incremental Selection')
-
 vim.keymap.set('n', '<C-LeftMouse>', function()
   vim.cmd [[exe "silent normal! \<LeftMouse>"]]
 

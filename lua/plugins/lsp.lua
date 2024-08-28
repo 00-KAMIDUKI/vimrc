@@ -56,7 +56,7 @@ local duplicates = {
 return {
   {
     'neovim/nvim-lspconfig',
-    event = 'User FileOpened',
+    -- event = 'User FileOpened',
     config = function()
       require 'lspconfig.ui.windows'.default_options = {
         border = {
@@ -122,7 +122,7 @@ return {
   },
   {
     'williamboman/mason-lspconfig',
-    event = 'User FileOpened',
+    -- event = 'User FileOpened',
     config = function()
       require('mason-lspconfig').setup()
       local setup_server = require 'utils.setup_server'
