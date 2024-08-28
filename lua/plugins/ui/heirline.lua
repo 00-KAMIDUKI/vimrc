@@ -28,7 +28,7 @@ return {
       provider = '  ',
       hl = function()
         return {
-          fg = default_bg() ~= 'NONE' and default_bg() or '#121318',
+          fg = utils.get_highlight 'CursorLine'.bg,
           bg = utils.get_highlight(({
             n = 'function',
             i = 'string',
