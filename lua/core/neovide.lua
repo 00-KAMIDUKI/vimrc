@@ -3,9 +3,9 @@ if not vim.g.neovide then
 end
 
 local candidate_fonts = {
-  { face = 'JetBrainsMono NFP Thin,LXGW WenKai Mono:h15', linespace = -1 },
-  { face = 'JetBrainsMono NFP Light,LXGW WenKai Mono:h15', linespace = -1 },
-  { face = 'JetBrainsMono NFP,LXGW WenKai Mono:h15', linespace = -1 },
+  { face = 'JetBrainsMono NFP Thin,LXGW WenKai Mono:h15',        linespace = -1 },
+  { face = 'JetBrainsMono NFP Light,LXGW WenKai Mono:h15',       linespace = -1 },
+  { face = 'JetBrainsMono NFP,LXGW WenKai Mono:h15',             linespace = -1 },
   { face = 'JetBrainsMono NFP Thin,LXGW WenKai Mono:h12.5' },
   { face = 'Maple Mono,JetBrainsMono NFP,LXGW WenKai Mono:h12.5' },
 }
@@ -19,20 +19,39 @@ end
 
 set_font()
 
-vim.o.winblend = 68
+do
+  vim.g.neovide_remember_window_size     = false
+  vim.g.neovide_remember_window_position = false
+end
 
-vim.g.neovide_scale_factor = 1.00
-vim.g.neovide_transparency = 0.93
-vim.g.neovide_scroll_animation_length = 0.14
-vim.g.neovide_cursor_vfx_mode = "railgun"
-vim.g.neovide_cursor_vfx_opacity = 220.0
-vim.g.neovide_cursor_vfx_particle_lifetime = 2.0
-vim.g.neovide_cursor_vfx_particle_density = 8.5
-vim.g.neovide_cursor_vfx_particle_speed = 9.2
-vim.g.neovide_cursor_vfx_particle_phase = 2.0
-vim.g.neovide_cursor_vfx_particle_curl = 0.3
-vim.g.neovide_remember_window_size = false
-vim.g.neovide_remember_window_position = false
+local storage = require 'utils.storage'
+local neovide = storage.data().neovide
+
+if neovide then
+  if neovide.global then
+    vim.g.neovide_transparency            = neovide.global.transparency
+    vim.g.neovide_scroll_animation_length = neovide.global.scroll_animation_length
+    local cursor                          = neovide.global.cursor
+    if cursor then
+      local vfx = cursor.vfx
+      if vfx then
+        vim.g.neovide_cursor_vfx_mode    = vfx.mode
+        vim.g.neovide_cursor_vfx_opacity = vfx.opacity
+        local particle                   = vfx.particle
+        if particle then
+          vim.g.neovide_cursor_vfx_particle_lifetime = particle.lifetime
+          vim.g.neovide_cursor_vfx_particle_density  = particle.density
+          vim.g.neovide_cursor_vfx_particle_speed    = particle.speed
+          vim.g.neovide_cursor_vfx_particle_phase    = particle.phase
+          vim.g.neovide_cursor_vfx_particle_curl     = particle.curl
+        end
+      end
+    end
+    if neovide.option then
+      vim.o.winblend = neovide.option.blend
+    end
+  end
+end
 
 vim.keymap.set('n', '<D-CR>', require 'utils.spawn_term', { desc = 'Spawn Terminal' })
 
