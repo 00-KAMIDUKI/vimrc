@@ -102,10 +102,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
     } do
       vim.cmd('hi! ' .. name .. ' guifg=none')
     end
-    if vim.g.neovide then
-      vim.api.nvim_set_hl(0, "Cursor", { fg = "#151416", bg = "#F23B0F" })
-      vim.api.nvim_set_hl(0, "TermCursor", { link = "Cursor" })
-    end
   end,
   desc = 'Set transparent background for some highlight groups.',
 })
