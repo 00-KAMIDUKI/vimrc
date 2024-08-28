@@ -173,6 +173,13 @@ return {
       exclude_filetypes = {},
       exclude_buftypes = {}
     },
+    main = 'nvim-highlight-colors',
+    config = function (plugin, opts)
+      require(plugin.main).setup(opts)
+      vim.api.nvim_create_autocmd('ColorScheme', {
+        callback = require(plugin.main).turnOn
+      })
+    end
   },
   -- {
   --   'NvChad/nvim-colorizer.lua',
