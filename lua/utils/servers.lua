@@ -47,10 +47,50 @@ local locally_installed = {
   hls = {},
 }
 
+local mason_handlers_additional = {
+  mesonlsp = {
+    root_dir = require('lspconfig.util').root_pattern('meson_options.txt', 'meson.options', '.git'),
+  },
+  jsonls = {
+    filetypes = { "json", "jsonc" },
+    settings = {
+      json = {
+        schemas = {
+          {
+            fileMatch = { "package.json" },
+            url = "https://json.schemastore.org/package.json",
+          },
+          {
+            fileMatch = { "tsconfig*.json" },
+            url = "https://json.schemastore.org/tsconfig.json",
+          },
+        },
+      },
+    },
+  },
+  volar = {
+    filetypes = { "vue", "typescript", "javascript" },
+  },
+}
+
+local setup_server = require 'utils.setup_server'
+
+local mason_handlers = {
+  setup_server,
+}
+
 return {
-  setup_locally_installed = function()
+  setup_local_servers = function()
     for server_name, opts in pairs(locally_installed) do
-      require 'utils.setup_server'(server_name, opts)
+      setup_server(server_name, opts)
     end
-  end
+  end,
+  setup_mason_servers = function()
+    for server_name, opts in pairs(mason_handlers_additional) do
+      mason_handlers[server_name] = function()
+        setup_server(server_name, opts)
+      end
+    end
+    require('mason-lspconfig').setup_handlers(mason_handlers)
+  end,
 }

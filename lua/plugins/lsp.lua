@@ -78,13 +78,13 @@ return {
         desc = "Lsp Diagnostic List"
       })
 
-      require 'utils.servers'.setup_locally_installed()
+      require 'utils.servers'.setup_local_servers()
 
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('UserLspConfig', {}),
         callback = function(args)
-          -- local client = vim.lsp.get_client_by_id(args.data.client_id)
-          -- if client then require 'utils.document_highlight'(client, args.buf) end
+          local client = vim.lsp.get_client_by_id(args.data.client_id)
+          if client then require 'utils.document_highlight'(client, args.buf) end
 
           -- Enable completion triggered by <c-x><c-o>
           vim.bo[args.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
@@ -125,47 +125,7 @@ return {
     -- event = 'User FileOpened',
     config = function()
       require('mason-lspconfig').setup()
-      local setup_server = require 'utils.setup_server'
-
-      local mason_handlers = {
-        function(server_name)
-          setup_server(server_name, {})
-        end,
-      }
-
-      local mason_handlers_additional = {
-        mesonlsp = {
-          root_dir = require('lspconfig.util').root_pattern('meson_options.txt', 'meson.options', '.git'),
-        },
-        jsonls = {
-          filetypes = { "json", "jsonc" },
-          settings = {
-            json = {
-              schemas = {
-                {
-                  fileMatch = { "package.json" },
-                  url = "https://json.schemastore.org/package.json",
-                },
-                {
-                  fileMatch = { "tsconfig*.json" },
-                  url = "https://json.schemastore.org/tsconfig.json",
-                },
-              },
-            },
-          },
-        },
-        volar = {
-          filetypes = { "vue", "typescript", "javascript" },
-        },
-      }
-
-      for server_name, opts in pairs(mason_handlers_additional) do
-        mason_handlers[server_name] = function()
-          setup_server(server_name, opts)
-        end
-      end
-
-      require('mason-lspconfig').setup_handlers(mason_handlers)
+      require 'utils.servers'.setup_mason_servers()
     end,
   },
   {
