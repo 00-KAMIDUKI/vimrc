@@ -20,10 +20,12 @@ vim.o.cursorline = true
 vim.o.termguicolors = true
 vim.o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,a:-Cursor"
 vim.o.showmode = false
-vim.o.title = true
 vim.o.mousescroll = 'ver:3,hor:3'
 vim.o.fillchars = [[foldopen:,foldsep: ,foldclose:,vert: ]]
 vim.o.laststatus = 3 -- always and only last window
+
+vim.o.title = true
+vim.o.titlestring = "%t"
 
 vim.o.incsearch = true
 vim.o.hlsearch = false
