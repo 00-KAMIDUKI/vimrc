@@ -81,9 +81,11 @@ return {
     },
     opts = {
       open_mapping = '<leader>\\',
+      on_open = function()
+        vim.wo.spell = false
+      end,
       insert_mappings = false,
       shade_terminals = false,
-      -- direction = vim.g.neovide and 'float' or 'horizontal',
       autochdir = true,
       float_opts = {
         border = 'curved',
@@ -91,9 +93,6 @@ return {
           border = 'Normal',
           background = 'Normal',
         },
-      },
-      highlights = {
-        ["Normal"] = { guibg = 'None' },
       },
     },
   },
@@ -174,7 +173,7 @@ return {
       exclude_buftypes = {}
     },
     main = 'nvim-highlight-colors',
-    config = function (plugin, opts)
+    config = function(plugin, opts)
       require(plugin.main).setup(opts)
       vim.api.nvim_create_autocmd('ColorScheme', {
         callback = require(plugin.main).turnOn
