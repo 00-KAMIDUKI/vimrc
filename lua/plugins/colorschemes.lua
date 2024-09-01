@@ -18,7 +18,7 @@ end
 local colorscheme_set = pcall(vim.cmd.colorscheme, activated)
 if colorscheme_set then create_autocmd() end
 
----@alias plugin { [1]: string, name: string, opts: (fun(): table), variants: string[] }
+---@alias plugin { [1]: string, name: string, opts: (fun(): table), variants: string[], event: string }
 
 ---@type plugin[]
 local plugins = {

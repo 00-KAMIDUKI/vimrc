@@ -28,6 +28,7 @@ return {
     }
 
     -- HACK: Disable warning message (Telescope colorscheme)
+    ---@diagnostic disable-next-line: duplicate-set-field
     require 'telescope.utils'.__warn_no_selection = function() end
 
     telescope.load_extension('ui-select')

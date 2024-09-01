@@ -46,13 +46,6 @@ local source_names = {
   copilot = "[Copilot]",
 }
 
-local duplicates = {
-  buffer = 1,
-  path = 1,
-  nvim_lsp = 0,
-  luasnip = 1,
-}
-
 return {
   {
     'neovim/nvim-lspconfig',
@@ -204,8 +197,8 @@ return {
           { name = 'path' },
           { name = 'calc' },
         },
-
         formatting = {
+          expandable_indicator = false,
           fields = { "kind", "abbr", "menu" },
           format = function(entry, vim_item)
             local max_width = 60
@@ -219,7 +212,6 @@ return {
             end
 
             vim_item.menu = source_names[entry.source.name]
-            vim_item.dup = duplicates[entry.source.name] or 0
             return vim_item
           end,
         },
@@ -305,4 +297,16 @@ return {
   --   'smjonas/inc-rename.nvim',
   --   config = true,
   -- }
+  {
+    "folke/lazydev.nvim",
+    ft = "lua", -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = "luvit-meta/library", words = { "vim%.uv" } },
+      },
+    },
+  },
+  { "Bilal2453/luvit-meta", lazy = true }, -- optional `vim.uv` typings
 }

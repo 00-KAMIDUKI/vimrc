@@ -12,8 +12,8 @@ local texts = {
   " ",
 }
 
----@param a string | number
----@param b string | number
+---@param a string | number?
+---@param b string | number?
 ---@param ratio number
 ---@return string
 local function hex_interpolation(a, b, ratio)
@@ -90,7 +90,6 @@ local interval_ms = 50
 
 local timer = vim.uv.new_timer()
 
-vim.uv.new_timer()
 local spans = {
   { { 1, 0, -1 } },
   { { 3, 0, -1 } },

@@ -229,7 +229,7 @@ return {
       },
       {
         '<leader>dv',
-        function() require('refactoring').debug.print_var() end,
+        function() require('refactoring').debug.print_var {} end,
         mode = { 'x', 'n' },
         desc = "Print var",
       },
