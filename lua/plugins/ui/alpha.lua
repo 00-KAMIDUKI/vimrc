@@ -47,9 +47,9 @@ return {
       dashboard.button('a', '   new file', vim.cmd.bd),
       dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
       dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
-      dashboard.button('r', '   restore', require('utils.session').load_last_session),
-      dashboard.button('s', '   sessions', require('utils.session').select_project),
-      dashboard.button('c', '   configure', function() vim.cmd.edit(vim.fn.stdpath('config')) end),
+      dashboard.button('r', '   restore', require('utils.session').load_last_session), ---@diagnostic disable-line: param-type-mismatch
+      dashboard.button('s', '   sessions', require('utils.session').select_project), ---@diagnostic disable-line: param-type-mismatch
+      dashboard.button('c', '   configure', function() vim.cmd.edit(vim.fn.stdpath 'config') end), ---@diagnostic disable-line: param-type-mismatch
       dashboard.button('q', '   quit', vim.cmd.quit),
     }
     for _, button in ipairs(dashboard.section.buttons.val) do
@@ -59,7 +59,7 @@ return {
     local version = vim.version()
     version = (" %d.%d.%d"):format(version.major, version.minor, version.patch)
 
-    local package_info = '󰏖 ' .. require('lazy').stats().loaded .. ' loaded'
+    local package_info = '󰏖 ' .. require('lazy').stats().count .. ' plugins'
     dashboard.section.buttons.opts.spacing = 1
 
     local info = {
@@ -100,6 +100,7 @@ return {
       "",
     }
     local fortune = require 'alpha.fortune'
+    ---@type table
     dashboard.section.footer.val = fortune {
       max_width = 60,
     }
