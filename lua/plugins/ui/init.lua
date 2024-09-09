@@ -95,6 +95,12 @@ return {
   {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = 'Neotree',
+    init = function()
+      if vim.fn.argc() > 0 and vim.fn.isdirectory(vim.fn.argv()[1]) then
+        require('utils.on_file_opened').action()
+        require 'neo-tree'
+      end
+    end,
     keys = {
       { '<leader>e', '<cmd>Neotree toggle<CR>', desc = 'Neotree Toggle' },
     },

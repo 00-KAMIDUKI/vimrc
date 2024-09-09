@@ -3,8 +3,8 @@ if not vim.g.neovide then
 end
 
 local candidate_fonts = {
-  { face = 'JetBrainsMono NFP Thin,LXGW WenKai Mono:h15',        linespace = -1 },
   { face = 'JetBrainsMono NFP Light,LXGW WenKai Mono:h15',       linespace = -1 },
+  { face = 'JetBrainsMono NFP Thin,LXGW WenKai Mono:h15',        linespace = -1 },
   { face = 'JetBrainsMono NFP,LXGW WenKai Mono:h15',             linespace = -1 },
   { face = 'JetBrainsMono NFP Thin,LXGW WenKai Mono:h12.5' },
   { face = 'Maple Mono,JetBrainsMono NFP,LXGW WenKai Mono:h12.5' },

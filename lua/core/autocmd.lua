@@ -101,5 +101,5 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufRead' }, {
   group = vim.api.nvim_create_augroup('FileOpened', {}),
-  callback = require 'utils.on_file_opened',
+  callback = require('utils.on_file_opened').callback,
 })
