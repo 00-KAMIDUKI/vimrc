@@ -96,7 +96,7 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     cmd = 'Neotree',
     init = function()
-      if vim.fn.argc() > 0 and vim.fn.isdirectory(vim.fn.argv()[1]) then
+      if vim.fn.argc() > 0 and vim.fn.isdirectory(vim.fn.argv()[1]) ~= 0 then
         require('utils.on_file_opened').action()
         require 'neo-tree'
       end
@@ -116,6 +116,33 @@ return {
         "trouble",
       },
       default_component_configs = {
+        icon = {
+          provider = function(icon, node, _)
+            if node.type == "file" or node.type == "terminal" then
+              local web_devicons = require "nvim-web-devicons"
+              local name = node.type == "terminal" and "terminal" or node.name
+              local text, hl = web_devicons.get_icon(name)
+              icon.text = text or icon.text
+              icon.highlight = hl or icon.highlight
+            elseif node.type == "directory" then
+              if node.id == vim.env['HOME'] then
+                icon.text = "󱂵"
+              elseif node.name:match 'src' or node.name:match 'source' then
+                icon.highlight = 'DiagnosticOk'
+              elseif node.name:match 'build' or node.name:match 'target' or node.name:match 'dist' then
+                icon.highlight = 'DiagnosticWarn'
+              elseif node.name == 'node_modules' then
+                icon.text = ""
+              elseif node.name == '.git' then
+                icon.text = ""
+              elseif node.name:match 'config' then
+                icon.text = ""
+              elseif node.name:match 'assets' then
+                icon.text = "󰉏"
+              end
+            end
+          end,
+        },
         modified = {
           symbol = "󰤌",
         },
