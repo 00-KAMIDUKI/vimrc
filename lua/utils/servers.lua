@@ -1,4 +1,5 @@
 local locally_installed = {
+  -- glasgow = {},
   lua_ls = {},
   rust_analyzer = {},
   clangd = {

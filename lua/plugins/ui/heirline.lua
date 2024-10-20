@@ -3,44 +3,13 @@ return {
   event = "User FileOpened",
   config = function()
     local utils = require "heirline.utils"
-
-    local color_cache = {}
-
-    local function default_fg()
-      if color_cache.default_fg == nil then
-        color_cache.default_fg = require 'utils.transparent'.value
-            and utils.get_highlight('Normal').fg
-            or utils.get_highlight('CursorLine').fg
-      end
-      return color_cache.default_fg
-    end
-
-    local function default_bg()
-      if color_cache.default_bg == nil then
-        color_cache.default_bg = require 'utils.transparent'.value
-            and 'NONE'
-            or utils.get_highlight('CursorLine').bg
-      end
-      return color_cache.default_bg
-    end
+    local transparent = require 'utils.transparent'
+    local default_fg = transparent.statusline_hl.fg
+    local default_bg = transparent.statusline_hl.bg
 
     local remote = {
       provider = '  ',
-      hl = function()
-        return {
-          fg = utils.get_highlight 'CursorLine'.bg,
-          bg = utils.get_highlight(({
-            n = 'function',
-            i = 'string',
-            v = 'keyword',
-            V = 'include',
-            t = 'label',
-            c = 'constant',
-            R = '@variable.builtin',
-            [''] = '@variable.parameter'
-          })[vim.fn.mode()] or 'DevIconBazel').fg
-        }
-      end,
+      hl = 'ModeColorReverse',
       update = "ModeChanged",
     }
 
@@ -53,13 +22,13 @@ return {
       end
     end
 
-    --- @return boolean
+    ---@return boolean
     local function is_git_directory()
       update_git_directory()
       return git_directory ~= nil
     end
 
-    --- @return string
+    ---@return string
     local function git_branch()
       if not git_directory then return "" end
       local f = io.open(('%s/.git/HEAD'):format(git_directory), 'r')
@@ -137,28 +106,28 @@ return {
       {
         provider = function() return ' ' .. vim.b.gitsigns_status_dict.added .. ' ' end,
         condition = function() return not_nil_and_gt_0(vim.b.gitsigns_status_dict.added) end,
-        hl = 'DiagnosticSignOk'
+        hl = function() return { fg = utils.get_highlight 'DiagnosticSignOk'.fg, bg = default_bg() } end,
       },
       {
         provider = function() return ' ' .. vim.b.gitsigns_status_dict.changed .. ' ' end,
         condition = function() return not_nil_and_gt_0(vim.b.gitsigns_status_dict.changed) end,
-        hl = 'DiagnosticSignWarn'
+        hl = function() return { fg = utils.get_highlight 'DiagnosticSignWarn'.fg, bg = default_bg() } end,
       },
       {
         provider = function() return ' ' .. vim.b.gitsigns_status_dict.removed .. ' ' end,
         condition = function() return not_nil_and_gt_0(vim.b.gitsigns_status_dict.removed) end,
-        hl = 'DiagnosticSignError'
+        hl = function() return { fg = utils.get_highlight 'DiagnosticSignError'.fg, bg = default_bg() } end,
       },
     }
 
     local selected = {
       provider = function()
-        local starts = vim.fn.line('v')
-        local ends = vim.fn.line('.')
+        local starts = vim.fn.line 'v'
+        local ends = vim.fn.line '.'
         local lines = (starts <= ends and ends - starts or starts - ends) + 1
         return ' ' .. lines .. ' '
       end,
-      condition = function() return vim.fn.mode():find('[Vv]') end,
+      condition = function() return vim.fn.mode():find('[Vv]') end,
       hl = function() return { fg = utils.get_highlight('@type').fg, bg = default_bg() } end,
       update = { 'CursorMoved', 'ModeChanged' },
     }
@@ -207,6 +176,7 @@ return {
           self.fg = entry.fg
         else
           self.text = ft .. ' '
+          ---@diagnostic disable-next-line: assign-type-mismatch
           self.fg = default_fg()
         end
       end,
@@ -272,12 +242,12 @@ return {
 
     vim.api.nvim_create_autocmd("ColorScheme", {
       callback = function()
-        color_cache = {}
-        utils.on_colorscheme()
+        utils.on_colorscheme {}
       end,
     })
 
     require 'heirline'.setup {
+      ---@type table
       statusline = {
         disabled,
         enabled,

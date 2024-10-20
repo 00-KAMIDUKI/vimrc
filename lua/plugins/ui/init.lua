@@ -21,17 +21,25 @@ return {
     'kyazdani42/nvim-web-devicons',
     lazy = true,
     opts = {
-      override = {
-        yuck = {
-          icon = "",
-          color = "#b49a49",
-          cterm_color = "66",
-          name = "Yuck",
-        },
+      override_by_filename = {
         ['.gitignore'] = {
           icon = "",
           color = "#e84b39",
           name = "GitIgnore",
+        },
+        ['.clang-format'] = {
+          icon = "",
+          color = "#97a965",
+          cterm_color = "106",
+          name = "Yuck",
+        },
+      },
+      override = {
+        yuck = {
+          icon = "",
+          color = "#b49a49",
+          cterm_color = "100",
+          name = "Yuck",
         },
         vim = {
           icon = '',
@@ -49,8 +57,8 @@ return {
       char = '▏',
     },
     main = 'indentmini',
-    config = function(spec, opts)
-      require(spec.main).setup(opts)
+    config = function(plugin, opts)
+      require(plugin.main).setup(opts)
 
       local function set_hl()
         vim.api.nvim_set_hl(0, 'IndentLine', { link = 'Comment' })
@@ -108,7 +116,49 @@ return {
       "nvim-lua/plenary.nvim",
       "MunifTanjim/nui.nvim",
     },
+    main = "neo-tree",
+    config = function(plugin, opts)
+      local function set_hl()
+        local bg = vim.api.nvim_get_hl(0, { name = "NeoTreeNormal", link = true }).bg
+        local active = vim.api.nvim_get_hl(0, { name = "NeoTreeRootName", link = true }).fg
+        local inactive = vim.api.nvim_get_hl(0, { name = "Comment", link = true }).fg
+        vim.api.nvim_set_hl(0, 'NeoTreeTabInactive', { fg = inactive, bg = bg })
+        vim.api.nvim_set_hl(0, 'NeoTreeTabActive', { fg = active, bg = bg })
+        vim.api.nvim_set_hl(0, 'NeoTreeTabSeparatorInactive', { fg = inactive, bg = bg })
+        vim.api.nvim_set_hl(0, 'NeoTreeTabSeparatorActive', { fg = inactive, bg = bg })
+      end
+      set_hl()
+      vim.api.nvim_create_autocmd('ColorScheme', {
+        callback = set_hl,
+        desc = 'Neotree highlight',
+      })
+      require(plugin.main).setup(opts)
+    end,
     opts = {
+      sources = {
+        "filesystem",
+        "buffers",
+        "git_status",
+        "document_symbols",
+      },
+      source_selector = {
+        winbar = true,
+        sources = {
+          { source = "filesystem", display_name = " 󰉕  " },
+          { source = "buffers", display_name = " 󰈔  " },
+          { source = "git_status", display_name = " 󰊢  " },
+          { source = "document_symbols", display_name = "   " },
+        },
+        padding = { left = 2, right = -1 },
+        separator = { left = "󱪼", right = "" },
+        content_layout = "center",
+        tabs_layout = "equal",
+        -- highlight_tab = "Comment",
+        -- highlight_tab_active = "ModeColor",
+        -- highlight_background = "Comment",
+        -- highlight_separator = "Comment",
+        -- highlight_separator_active = "Comment",
+      },
       close_if_last_window = true,
       open_files_do_not_replace_types = {
         "toggleterm",
@@ -170,7 +220,9 @@ return {
     -- event = 'VeryLazy', -- BUG: flickers
     opts = {
       presets = {
-        inc_rename = true,
+        bottom_search = true,
+        command_palette = true,
+        long_message_to_split = false,
         lsp_doc_border = true,
       },
       cmdline = {
@@ -209,21 +261,12 @@ return {
         },
       },
       lsp = {
-        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-        override = {
-          ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
-          ["vim.lsp.util.stylize_markdown"] = true,
-          ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+        progress = {
+          throttle = 20, -- frequency to update lsp progress message
         },
         hover = {
           silent = true,
         },
-        signature = {
-          enabled = true,
-        },
-        documentation = {
-          view = 'hover'
-        }
       },
     },
   },
@@ -256,20 +299,29 @@ return {
         options = {
           laststatus = 0,
         },
-        gitsigns = false,
+        gitsigns = { enabled = true },
       },
       on_open = function()
         if vim.g.neovide then
           vim.g.old_transparency = vim.g.neovide_transparency
           vim.g.neovide_transparency = 100
         end
-        vim.cmd 'ScrollbarToggle'
+        require 'scrollbar.utils'.toggle()
+        if io.popen 'hyprctl activewindow':read "*a":match 'fullscreen: 0' then
+          vim.g.is_fullscreen = false
+          io.popen 'hyprctl dispatch fullscreen'
+        else
+          vim.g.is_fullscreen = true
+        end
       end,
       on_close = function()
         if vim.g.neovide then
           vim.g.neovide_transparency = vim.g.old_transparency
         end
-        vim.cmd 'ScrollbarToggle'
+        require 'scrollbar.utils'.toggle()
+        if not io.popen 'hyprctl activewindow':read "*a":match 'fullscreen: 0' and not vim.g.is_fullscreen then
+          io.popen 'hyprctl dispatch fullscreen'
+        end
       end,
     },
     keys = {

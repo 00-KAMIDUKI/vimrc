@@ -28,6 +28,8 @@ local path = vim.fn.stdpath 'data' .. '/core/storage.lua'
 ---@field colorscheme? string
 ---@field transparent_background? boolean
 ---@field neovide? neovide
+---@field statusline_hl? string
+---@field translate_url? string
 local data
 
 local function init()

@@ -6,10 +6,24 @@ return {
   event = 'User FileOpened',
   main = 'nvim-treesitter.configs',
   build = ":TSUpdate",
+  config = function(plugin, opt)
+    ---@type table<string, ParserInfo>
+    local parser_config = require "nvim-treesitter.parsers".get_parser_configs()
+    parser_config.wgsl = {
+      maintainers = { 'kamiduki' },
+      install_info = {
+        url = "~/repo/treesitter/tree-sitter-wgsl",
+        files = { "src/parser.c", "src/scanner.c" }
+      },
+      filetype = 'wgsl',
+    }
+    require(plugin.main).setup(opt)
+  end,
   opts = {
     textobjects = {
       select = {
         enable = true,
+        lookahead = true,
         keymaps = {
           ["af"] = { query = "@function.outer", desc = "function" },
           ["ac"] = { query = "@class.outer", desc = "class" },

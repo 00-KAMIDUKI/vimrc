@@ -32,24 +32,37 @@ local diagnostic_hl = {
   'DiagnosticHint',
 }
 
--- local diagnostic_signs = {
---   '󰅚', -- Error
---   '', -- Warning
---   '󰋽', -- Info
---   '󰌶', -- Hint
--- }
+local tabline_bg = require 'utils.transparent'.statusline_hl.bg
+local tabline_fg = require 'utils.transparent'.statusline_hl.fg
+
+local tabline_selected_bg = "TabLineSel"
+local tabline_selected_fg = tabline_selected_bg
 
 local padding = {
   text = " ",
 }
 
 local head = {
-  text = function(buffer) return buffer.is_focused and '▍' or ' ' end,
-  fg = 'TabLineSel',
+  text = function(buffer) return buffer.is_focused and '▍' or buffer.index == 1 and ' ' or '' end,
+  fg = function(buffer) return buffer.is_focused
+    and vim.api.nvim_get_hl(0, { name = 'ModeColor', link = false }).fg
+    or tabline_fg() end
 }
 
+local function is_picking_focus()
+  return require 'cokeline.mappings'.is_picking_focus()
+end
+
+local function is_picking_close()
+  return require 'cokeline.mappings'.is_picking_close()
+end
+
 local icon = {
-  text = function(buffer) return buffer.devicon.icon end,
+  text = function(buffer)
+    return (is_picking_focus() or is_picking_close())
+        and buffer.pick_letter .. ' '
+        or buffer.devicon.icon
+  end,
   fg = function(buffer) return buffer.devicon.color end,
 }
 
@@ -65,14 +78,16 @@ local filename = {
   bold = function(buffer) return buffer.is_focused end,
   underline = function(buffer) return buffer.is_hovered end,
   fg = function(buffer)
-    return diagnostic_hl[diagnostic_severity(buffer.diagnostics)]
+    return (diagnostic_hl[diagnostic_severity(buffer.diagnostics)] or buffer.is_focused)
+      and tabline_selected_fg
+      or tabline_fg()
   end,
 }
 
 local diag_count = {
   text = function(buffer)
     local count = diagnostic_count(buffer.diagnostics)
-    return count > 0 and count or ""
+    return count > 0 and count .. ' ' or ""
   end,
   fg = function(buffer)
     return diagnostic_hl[diagnostic_severity(buffer.diagnostics)]
@@ -88,55 +103,71 @@ local close_icon = {
   on_click = function(_, _, _, _, buffer) buffer:delete() end,
 }
 
-local default_hl = function(buffer)
-  return buffer.is_focused and 'Visual' or 'CursorLine'
-end
-
 return {
   'willothy/nvim-cokeline',
   event = 'User FileOpened',
-  config = true,
+  main = 'cokeline',
+  config = function(plugin, opts)
+    vim.g.tabline_plugin_loaded = true
+    require(plugin.main).setup(opts)
+
+    vim.keymap.set('n', '<leader>s', function()
+      require 'cokeline.mappings'.pick 'focus'
+    end, { desc = "Pick a buffer to focus" })
+    vim.keymap.set('n', '<Tab>', '<Plug>(cokeline-focus-next)', { silent = true })
+    vim.keymap.set('n', '<S-Tab>', '<Plug>(cokeline-focus-prev)', { silent = true })
+  end,
   opts = {
-    buffers = {
-      filter_valid = function(buffer)
-        return not buffer.type ~= 'terminal'
-      end,
-    },
     rhs = {
-      { text = '  ', bg = 'Normal', fg = 'Normal' },
-      { text = '  ', bg = 'Normal', fg = 'Normal' },
-      { text = '  ', bg = 'Normal', fg = 'Normal' },
+      { text = '  ', highlight = 'TabLineFill' },
+      { text = '  ', highlight = 'TabLineFill', on_click = function() vim.cmd.vsplit() end },
+      { text = '  ', highlight = 'TabLineFill' },
     },
     sidebar = {
       filetype = { 'neo-tree' },
       components = {
         {
-          text = function(buf)
-            local winid = vim.fn.bufwinid(buf.number)
+          text = function(buffer)
+            local winid = vim.fn.bufwinid(buffer.number)
             local win_width = vim.fn.winwidth(winid)
             local label = ' EXPLORER'
             return label .. (' '):rep(win_width - #label - 2)
+          end,
+        },
+        {
+          text = '',
+          on_click = function()
+            local neo_tree_win = vim.tbl_filter(function(win)
+              local buf = vim.api.nvim_win_get_buf(win)
+              return vim.api.nvim_get_option_value('filetype', { buf = buf }) == 'neo-tree'
+            end, vim.api.nvim_tabpage_list_wins(0))[1]
+            if not neo_tree_win then return end
+            if vim.api.nvim_get_option_value('winbar', { win = neo_tree_win }) == '' then
+              vim.api.nvim_set_option_value('winbar', [[%{%v:lua.require'neo-tree.ui.selector'.get()%}]], {
+                win = neo_tree_win,
+              })
+            else
+              vim.api.nvim_set_option_value('winbar', '', {
+                win = neo_tree_win,
+              })
+            end
           end
         },
-        { text = '', },
       },
     },
     components = {
       head,
-      padding,
       icon,
       prefix,
       filename,
       padding,
       diag_count,
-      padding,
       close_icon,
       padding,
     },
     default_hl = {
-      fg = default_hl,
-      bg = default_hl,
+      fg = function(buffer) return buffer.is_focused and tabline_selected_fg or tabline_fg() end,
+      bg = function(buffer) return buffer.is_focused and tabline_selected_bg or tabline_bg() end,
     },
-    fill_hl = 'Normal',
   },
 }

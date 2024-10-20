@@ -15,14 +15,17 @@ vim.o.number = true
 vim.o.relativenumber = true
 vim.o.numberwidth = 1
 vim.o.signcolumn = "auto:1"
+
 vim.o.wrap = false
 vim.o.cursorline = true
 vim.o.termguicolors = true
 vim.o.guicursor = "n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20,a:-Cursor"
 vim.o.showmode = false
 vim.o.mousescroll = 'ver:3,hor:3'
-vim.o.fillchars = [[foldopen:,foldsep: ,foldclose:,vert: ]]
 vim.o.laststatus = 3 -- always and only last window
+vim.o.fillchars = [[foldopen:,foldsep: ,foldclose:,vert: ]]
+vim.o.list = true
+vim.o.listchars = "trail:·,extends:󰶻,precedes:󰶺,nbsp:±"
 
 vim.o.title = true
 vim.o.titlestring = "%t"

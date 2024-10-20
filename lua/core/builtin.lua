@@ -7,3 +7,15 @@ vim.diagnostic.config {
   virtual_text = {},
   severity_sort = true,
 }
+
+vim.filetype.add {
+  pattern = {
+    ['${XDG_CONFIG_HOME}/hypr/.*.conf'] = 'hyprlang',
+  },
+  extension = {
+    hl = 'hyprlang',
+    rasi = 'rasi',
+    glsl = 'glsl',
+    plymouth = 'dosini',
+  },
+}

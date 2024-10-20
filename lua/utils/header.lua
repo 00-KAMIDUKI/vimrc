@@ -72,7 +72,7 @@ end
 set_background_color()
 vim.api.nvim_create_autocmd('ColorScheme', { callback = set_background_color })
 
---- PERF: stop setting hl when Alpha is now shown
+-- PERF: stop setting hl when Alpha is now shown
 local counter = 0
 local timeout = function()
   local a = 36

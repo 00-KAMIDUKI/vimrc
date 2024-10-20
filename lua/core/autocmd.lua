@@ -1,37 +1,3 @@
-vim.api.nvim_create_autocmd({
-  'BufRead',
-  'BufNewFile',
-}, {
-  desc = 'Set filetype to glsl',
-  pattern = '*.frag,*.vert,*.geom,*.comp,*.tesc,*.tese',
-  command = 'setlocal filetype=glsl',
-})
-
-vim.api.nvim_create_autocmd({
-  'BufRead',
-  'BufNewFile',
-}, {
-  desc = 'Set filetype to hyprlang',
-  pattern = { 'hypr*.conf', '*.hl' },
-  command = 'setlocal filetype=hyprlang',
-})
-
-vim.api.nvim_create_autocmd({
-  'BufRead',
-  'BufNewFile',
-}, {
-  desc = 'Set filetype to rasi',
-  pattern = '*.rasi',
-  command = 'setlocal filetype=rasi',
-})
-
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'wgsl',
-  callback = function()
-    vim.opt.commentstring = '// %s'
-  end,
-})
-
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'kdl',
   callback = function()
@@ -51,25 +17,19 @@ vim.api.nvim_create_autocmd('BufEnter', {
   nested = true,
 })
 
-vim.api.nvim_create_autocmd('BufEnter', {
-  callback = function() end,
-  nested = true,
-})
-
 vim.api.nvim_create_autocmd({ "InsertLeave" }, {
-  desc = "Change input method to English when leaving insert mode",
-  pattern = { "*" },
   callback = require('utils.ime').leave_insert,
+  desc = "Change input method to English when leaving insert mode",
 })
 
 vim.api.nvim_create_autocmd({ "InsertEnter" }, {
-  desc = "Restore input method when entering insert mode",
-  pattern = { "*" },
   callback = require('utils.ime').enter_insert,
+  desc = "Restore input method when entering insert mode",
 })
 
 vim.api.nvim_create_autocmd({ "InsertEnter" }, {
   callback = require 'utils.exit_hlsearch',
+  desc = "Exit highlight search",
 })
 
 vim.api.nvim_create_user_command("MakeDirectory", function()
@@ -84,6 +44,19 @@ vim.api.nvim_create_user_command("MakeDirectory", function()
 end, { desc = "Create directory if it doesn't exist" })
 
 vim.api.nvim_create_user_command('ToggleTransparent', require 'utils.transparent'.toggle, {})
+
+local storage = require 'utils.storage'
+vim.api.nvim_create_user_command('StatusLineHighlight', function(opts)
+  local highlight = opts.args
+  storage.data().statusline_hl = highlight
+  storage.persist()
+  require 'utils.reset_colorscheme' ()
+end, {
+  nargs = 1,
+  complete = function()
+    return { 'StatusLine', 'NormalFloat', 'Normal' }
+  end,
+})
 
 vim.api.nvim_create_autocmd("ColorScheme", {
   callback = function()
@@ -102,4 +75,15 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 vim.api.nvim_create_autocmd({ 'BufEnter', 'BufRead' }, {
   group = vim.api.nvim_create_augroup('FileOpened', {}),
   callback = require('utils.on_file_opened').callback,
+})
+
+vim.api.nvim_create_autocmd({ 'ModeChanged', 'ColorScheme' }, {
+  callback = require 'utils.mode_color',
+  desc = 'Change highlight related to mode.',
+})
+
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank {}
+  end
 })

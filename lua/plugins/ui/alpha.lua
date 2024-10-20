@@ -9,22 +9,33 @@ return {
     })
   end,
   keys = {
-    { '<leader>a', '<cmd>Alpha<CR>', { desc = 'Dashboard' } },
+    { '<leader>a', function()
+      if vim.o.filetype == 'neo-tree' then vim.cmd [[Neotree close]] end
+      require 'alpha'.start()
+    end, { desc = 'Dashboard' } },
   },
   config = function()
-    vim.o.statusline='%#Normal#'
+    -- vim.o.statusline = '%#Normal#' -- before status-line plugin loaded
 
     local dashboard = require 'alpha.themes.dashboard'
     local header = require 'utils.header'
 
     vim.api.nvim_create_autocmd('User', {
       pattern = 'AlphaReady',
-      callback = header.anim_start,
+      callback = function()
+        header.anim_start()
+        vim.o.laststatus = 0
+        vim.o.showtabline = 0
+      end,
     })
 
     vim.api.nvim_create_autocmd('User', {
       pattern = 'AlphaClosed',
-      callback = header.anim_stop,
+      callback = function()
+        header.anim_stop()
+        vim.o.laststatus = 3
+        vim.o.showtabline = vim.g.tabline_plugin_loaded and 2 or 1
+      end,
     })
 
     local highlights = {
@@ -45,8 +56,8 @@ return {
 
     dashboard.section.buttons.val = {
       dashboard.button('a', '   new file', vim.cmd.bd),
-      dashboard.button('w', '󰺄   find word', '<cmd>Telescope live_grep<CR>'),
-      dashboard.button('o', '   old files', '<cmd>Telescope oldfiles<CR>'),
+      dashboard.button('z', '󰒲   lazy', '<cmd>Lazy<CR>'),
+      dashboard.button('p', '󰄉   profile', '<cmd>Lazy profile<CR>'),
       dashboard.button('r', '   restore', require('utils.session').load_last_session), ---@diagnostic disable-line: param-type-mismatch
       dashboard.button('s', '   sessions', require('utils.session').select_project), ---@diagnostic disable-line: param-type-mismatch
       dashboard.button('c', '   configure', function() vim.cmd.edit(vim.fn.stdpath 'config') end), ---@diagnostic disable-line: param-type-mismatch

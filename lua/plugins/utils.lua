@@ -71,6 +71,26 @@ return {
         visual = 's',
         visual_line = 'S',
       },
+      surrounds = {
+        ["("] = {
+          add = { "(", ")" },
+        },
+        [")"] = {
+          add = { "( ", " )" },
+        },
+        ["<"] = {
+          add = { "<", ">" },
+        },
+        [">"] = {
+          add = { "< ", " >" },
+        },
+        ["["] = {
+          add = { "[", "]" },
+        },
+        ["]"] = {
+          add = { "[ ", " ]" },
+        },
+      },
     },
     config = true,
   },
@@ -125,7 +145,7 @@ return {
       },
       spec = {
         { "<leader>f", group = 'Find' },
-        { "<leader>c", group = 'Color Picker', icon = { icon = ' ', color = 'Include' } },
+        { "<leader>c", group = 'Color Picker', icon = { icon = ' ', hl = 'Include' } },
         { "<leader>d", group = 'Debug', mode = 'nv' },
         { "<leader>a", icon = { icon = "󰕮 ", hl = 'Operator' } },
         { "<leader>/", icon = { icon = " ", hl = 'String' } },
@@ -133,13 +153,14 @@ return {
       },
       icons = {
         rules = {
+          { pattern = 'flash', icon = '', color = 'orange' },
           { pattern = 'debug', icon = ' ', color = 'red' },
           { pattern = 'next', icon = '󰙡 ', color = 'azure' },
           { pattern = 'prev', icon = '󰙣 ', color = 'azure' },
           { pattern = 'terminal', icon = ' ', color = 'red' },
           { pattern = 'left', icon = ' ', color = 'azure' },
           { pattern = 'right', icon = ' ', color = 'azure' },
-          { pattern = 'up', icon = ' ', color = 'azure' },
+          { pattern = 'up$', icon = ' ', color = 'azure' },
           { pattern = 'down', icon = ' ', color = 'azure' },
         },
       },
@@ -243,13 +264,22 @@ return {
   },
   {
     "folke/flash.nvim",
-    opts = {},
+    ---@type Flash.Config
+    opts = {
+      prompt = {
+        prefix = {
+          { " ", "FlashPromptIcon" },
+        },
+      },
+    },
     keys = {
-      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
-      { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
-      { "r",     mode = { "o" },           function() require("flash").remote() end,            desc = "Remote Flash" },
-      { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+      { "f",     mode = { "n", "x" } },
+      { "F",     mode = { "n", "x" } },
+      { "s",     mode = { "n" },      function() require("flash").jump() end,              desc = "Flash" },
+      { "S",     mode = { "n" },      function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+      { "r",     mode = { "o" },      function() require("flash").remote() end,            desc = "Remote Flash" },
+      { "R",     mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" },      function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
     },
   }
 }
